@@ -1,0 +1,8 @@
+Config Color
+
+050911 background
+
+0E0E0E highlighted / selected
+181818 pressed
+
+FF0000 30% disabled
