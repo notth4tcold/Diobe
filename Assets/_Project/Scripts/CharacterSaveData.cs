@@ -1,8 +1,13 @@
 
-[System.Serializable]
-public class CharacterData {
+using System;
+
+[Serializable]
+public class CharacterSaveData {
     public string id;
     public string playerName;
+    public int level;
+    public int exp;
+    public DateTime lastSave;
     public CharacterClass characterClass;
 }
 

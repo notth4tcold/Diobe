@@ -2,12 +2,13 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class UIManagerMainMenu : MonoBehaviour {
+
     public void OnNewGameClicked() {
         SceneManager.LoadScene("NewGame");
     }
 
     public void OnLoadGameClicked() {
-        Debug.Log("Load Game!");
+        SceneManager.LoadScene("LoadGame");
     }
 
     public void OnOptionsClicked() {

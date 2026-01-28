@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -10,7 +9,13 @@ public class UIManagerNewGame : MonoBehaviour {
     private TMP_InputField nameInput;
 
     [SerializeField]
+    private GameObject nameGameobject;
+
+    [SerializeField]
     private TMP_Dropdown classDropdown;
+
+    [SerializeField]
+    private GameObject classGameobject;
 
     [SerializeField]
     private TMP_Dropdown importDropdown;
@@ -18,16 +23,22 @@ public class UIManagerNewGame : MonoBehaviour {
     [SerializeField]
     private GameObject importGameobject;
 
-    List<CharacterData> loadedCharacters;
+    List<CharacterSaveData> loadedCharacters;
+
+    [SerializeField]
+    private GameObject startGameobject;
+
+    [SerializeField]
+    private GameObject importStartGameobject;
 
     void Start() {
         LoadCharactersIntoDropdown();
         importGameobject.SetActive(false);
+        importStartGameobject.SetActive(false);
     }
 
     void LoadCharactersIntoDropdown() {
-
-        loadedCharacters = CharacterSaveSystem.LoadAllCharacters();
+        loadedCharacters = GameManager.Instance.GetAllCharacters();
 
         importDropdown.ClearOptions();
         List<string> options = new() {
@@ -35,7 +46,7 @@ public class UIManagerNewGame : MonoBehaviour {
         };
 
         foreach (var c in loadedCharacters) {
-            options.Add($"{c.playerName} ({c.characterClass})");
+            options.Add($"{c.playerName} ({c.characterClass}) - Lv {c.level}");
         }
 
         importDropdown.AddOptions(options);
@@ -43,39 +54,36 @@ public class UIManagerNewGame : MonoBehaviour {
     }
 
     public void OnStartGameClicked() {
+        if (nameInput.text != "") {
+            string name = nameInput.text;
+            string classs = classDropdown.options[classDropdown.value].text;
 
+            Debug.Log("New Player " + name + " as " + classs);
+
+            GameManager.Instance.NewCharacterSaveData(name, classDropdown.value);
+
+            SceneManager.LoadScene("Home");
+        }
+    }
+
+    public void OnImportStartClicked() {
         if (importDropdown.value > 0 && importDropdown.value <= loadedCharacters.Count) {
-
             var character = loadedCharacters[importDropdown.value - 1];
 
-            GameManager.Instance.characterData = new CharacterData {
-                id = character.id,
-                playerName = character.playerName,
-                characterClass = character.characterClass
-            };
+            GameManager.Instance.FillCharacterSaveData(character);
 
             Debug.Log("Game start with Player " + character.playerName + " as " + character.characterClass);
 
             SceneManager.LoadScene("Home");
-            return;
         }
-
-        string name = nameInput.text;
-        string classs = classDropdown.options[classDropdown.value].text;
-
-        Debug.Log("New Player " + name + " as " + classs);
-
-        GameManager.Instance.characterData = new CharacterData {
-            id = System.Guid.NewGuid().ToString(),
-            playerName = name,
-            characterClass = (CharacterClass)classDropdown.value
-        };
-
-        SceneManager.LoadScene("Home");
     }
 
     public void OnImportClicked() {
+        nameGameobject.SetActive(!nameGameobject.activeSelf);
+        classGameobject.SetActive(!classGameobject.activeSelf);
+        startGameobject.SetActive(!startGameobject.activeSelf);
         importGameobject.SetActive(!importGameobject.activeSelf);
+        importStartGameobject.SetActive(!importStartGameobject.activeSelf);
     }
 
     public void OnBackClicked() {

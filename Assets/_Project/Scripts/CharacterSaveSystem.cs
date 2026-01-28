@@ -10,9 +10,10 @@ public class CharacterSaveSystem {
 
     static string CharPath(string id) => BasePath + $"/char_{id}.json";
 
-    public static void SaveCharacter(CharacterData data) {
-
+    public static void SaveCharacter(CharacterSaveData data) {
         Directory.CreateDirectory(BasePath);
+
+        data.lastSave = System.DateTime.Now;
 
         File.WriteAllText(CharPath(data.id), JsonUtility.ToJson(data, true));
 
@@ -22,18 +23,18 @@ public class CharacterSaveSystem {
 
         File.WriteAllText(IndexPath, JsonUtility.ToJson(index, true));
 
-        Debug.Log(data.playerName + " was saved!");
+        Debug.Log("Character saved - Player " + data.playerName + " as " + data.characterClass);
     }
 
-    public static CharacterData LoadCharacter(string id) {
+    static CharacterSaveData LoadCharacter(string id) {
         if (!File.Exists(CharPath(id))) return null;
 
-        return JsonUtility.FromJson<CharacterData>(File.ReadAllText(CharPath(id)));
+        return JsonUtility.FromJson<CharacterSaveData>(File.ReadAllText(CharPath(id)));
     }
 
-    public static List<CharacterData> LoadAllCharacters() {
+    public static List<CharacterSaveData> LoadAllCharacters() {
         var index = LoadIndex();
-        var list = new List<CharacterData>();
+        var list = new List<CharacterSaveData>();
 
         if (index == null) return list;
 

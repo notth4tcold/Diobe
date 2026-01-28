@@ -7,22 +7,43 @@ public class UIManager : MonoBehaviour {
     [SerializeField]
     private GameObject pauseUI;
 
+    private bool isPaused;
+
     void Start() {
-        pauseUI.SetActive(false);
+        isPaused = false;
+        pauseUI.SetActive(isPaused);
     }
 
     void Update() {
         if (Keyboard.current.escapeKey.wasPressedThisFrame) {
-            pauseUI.SetActive(!pauseUI.activeSelf);
+            if (isPaused) Resume();
+            else Pause();
         }
     }
 
-    public void OnPlayClicked() {
+    void Resume() {
+        Time.timeScale = 1f;
         pauseUI.SetActive(false);
+        isPaused = false;
+    }
+
+    void Pause() {
+        Time.timeScale = 0f;
+        pauseUI.SetActive(true);
+        isPaused = true;
+    }
+
+    public void OnPlayClicked() {
+        Resume();
     }
 
     public void OnSaveCharacterClicked() {
-        CharacterSaveSystem.SaveCharacter(GameManager.Instance.characterData);
+        CharacterSaveSystem.SaveCharacter(GameManager.Instance.characterSaveData);
+    }
+
+    public void OnSaveGameClicked() {
+        GameManager.Instance.FillGameSaveData();
+        GameSaveSystem.SaveGame(GameManager.Instance.gameSaveData);
     }
 
     public void OnExitClicked() {
