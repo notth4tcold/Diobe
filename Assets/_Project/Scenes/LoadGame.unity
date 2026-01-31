@@ -177,7 +177,7 @@ GameObject:
   - component: {fileID: 56234358}
   - component: {fileID: 56234357}
   m_Layer: 5
-  m_Name: Button Load
+  m_Name: ButtonLoad
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -309,7 +309,7 @@ GameObject:
   - component: {fileID: 78074894}
   - component: {fileID: 78074893}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: TextLoad
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -999,7 +999,7 @@ GameObject:
   m_Component:
   - component: {fileID: 521286269}
   m_Layer: 5
-  m_Name: Panel New Game
+  m_Name: PanelNewGame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1141,7 +1141,7 @@ GameObject:
   - component: {fileID: 685461428}
   - component: {fileID: 685461427}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: TextBack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1279,7 +1279,7 @@ GameObject:
   - component: {fileID: 819158634}
   - component: {fileID: 819158633}
   m_Layer: 5
-  m_Name: Dropdown Load
+  m_Name: DropdownLoad
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1572,7 +1572,7 @@ GameObject:
   - component: {fileID: 1233301289}
   - component: {fileID: 1233301288}
   m_Layer: 5
-  m_Name: Button Back
+  m_Name: ButtonBack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1749,8 +1749,8 @@ MonoBehaviour:
       level: 0
       exp: 0
       characterClass: 0
-    playerPosition: {fileID: 0}
-    mapPosition: {fileID: 0}
+    playerPosition: {x: 0, y: 0}
+    mapPosition: {x: 0, y: 0}
 --- !u!1 &1394087685
 GameObject:
   m_ObjectHideFlags: 0

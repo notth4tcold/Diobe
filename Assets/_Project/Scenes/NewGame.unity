@@ -184,7 +184,7 @@ GameObject:
   - component: {fileID: 56234358}
   - component: {fileID: 56234357}
   m_Layer: 5
-  m_Name: Button Import
+  m_Name: ButtonImport
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -316,7 +316,7 @@ GameObject:
   - component: {fileID: 71890721}
   - component: {fileID: 71890720}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: TextImport
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -453,7 +453,7 @@ GameObject:
   - component: {fileID: 78074894}
   - component: {fileID: 78074893}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: TextImport
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -839,7 +839,7 @@ GameObject:
   - component: {fileID: 286334338}
   - component: {fileID: 286334337}
   m_Layer: 5
-  m_Name: Dropdown Class
+  m_Name: DropdownClass
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1498,7 +1498,7 @@ GameObject:
   m_Component:
   - component: {fileID: 521286269}
   m_Layer: 5
-  m_Name: Panel New Game
+  m_Name: PanelNewGame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1809,7 +1809,7 @@ GameObject:
   - component: {fileID: 660898031}
   - component: {fileID: 660898030}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: TextStart
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1946,7 +1946,7 @@ GameObject:
   - component: {fileID: 685461428}
   - component: {fileID: 685461427}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: TextBack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2210,7 +2210,7 @@ GameObject:
   - component: {fileID: 819158634}
   - component: {fileID: 819158633}
   m_Layer: 5
-  m_Name: Dropdown Import
+  m_Name: DropdownImport
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2428,7 +2428,7 @@ GameObject:
   - component: {fileID: 823301424}
   - component: {fileID: 823301423}
   m_Layer: 5
-  m_Name: Button Import
+  m_Name: ButtonImport
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3215,7 +3215,7 @@ GameObject:
   - component: {fileID: 1233301289}
   - component: {fileID: 1233301288}
   m_Layer: 5
-  m_Name: Button Back
+  m_Name: ButtonBack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3379,10 +3379,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60f17164aa938a643aadbc9637856f77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
-  characterData:
+  characterSaveData:
     id: 
     playerName: 
+    level: 0
+    exp: 0
     characterClass: 0
+  gameSaveData:
+    characterSaveData:
+      id: 
+      playerName: 
+      level: 0
+      exp: 0
+      characterClass: 0
+    playerPosition: {x: 0, y: 0}
+    mapPosition: {x: 0, y: 0}
 --- !u!1 &1360870338
 GameObject:
   m_ObjectHideFlags: 0
@@ -3396,7 +3407,7 @@ GameObject:
   - component: {fileID: 1360870341}
   - component: {fileID: 1360870340}
   m_Layer: 5
-  m_Name: InputField Name
+  m_Name: InputFieldName
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3952,7 +3963,7 @@ GameObject:
   - component: {fileID: 1729911654}
   - component: {fileID: 1729911653}
   m_Layer: 5
-  m_Name: Button Start
+  m_Name: ButtonStart
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

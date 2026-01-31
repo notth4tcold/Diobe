@@ -9,7 +9,7 @@ public class PlayerMovement : MonoBehaviour {
     [Header("Move")]
     private float moveForce = 100.0f;
     private float maxVelocity = 10.0f;
-    private float fakeFrictionValue = 0.95f;
+    private float fakeFrictionValue = 0.5f;
 
     [Header("Jump")]
     private float jumpForce = 5f;
