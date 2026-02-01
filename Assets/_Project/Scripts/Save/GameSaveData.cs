@@ -1,4 +1,5 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [Serializable]
@@ -10,4 +11,7 @@ public class GameSaveData {
 
     public Vector2 mapPosition;
     public bool hasMapPosition;
+
+    [DoNotSerialize]
+    public bool isNewPlayer = false;
 }

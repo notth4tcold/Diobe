@@ -6,18 +6,19 @@ using System.Collections.Generic;
 public class CharacterSaveData {
     public string id;
     public string playerName;
+    public CharacterClass characterClass;
+
+    public int money;
     public int level;
     public int exp;
-    public DateTime lastSave;
-    public CharacterClass characterClass;
-    public List<InventoryItemSaveData> items = new();
-}
 
-[Serializable]
-public enum CharacterClass {
-    Warrior,
-    Archer,
-    Mage
+    public PlayerStats stats = new();
+    public PlayerResources resources = new();
+    public PlayerCombat combat = new();
+
+    public DateTime lastSave;
+
+    public List<InventoryItemSaveData> items = new();
 }
 
 [Serializable]

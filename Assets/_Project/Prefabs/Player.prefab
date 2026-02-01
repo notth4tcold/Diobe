@@ -46,6 +46,7 @@ GameObject:
   - component: {fileID: 1453107852476171461}
   - component: {fileID: 3890928112132827171}
   - component: {fileID: 7483196144818418769}
+  - component: {fileID: 875115725829788560}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -334,14 +335,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b8a500d981a540488e4a0c2659c78ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
-  moveForce: 100
-  maxVelocity: 20
-  fakeFrictionValue: 0.95
-  jumpForce: 2
-  maxJumpTime: 0.45
   isJumping: 0
-  jumpHeld: 0
-  jumpTimeCounter: 0
 --- !u!114 &7483196144818418769
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -359,3 +353,15 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
+--- !u!114 &875115725829788560
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3703478193029192525}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cf9a9c1fe0532e48b48d5300efa4529, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Player

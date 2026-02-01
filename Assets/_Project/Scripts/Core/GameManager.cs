@@ -40,10 +40,14 @@ public class GameManager : MonoBehaviour {
         var characterSaveData = new CharacterSaveData {
             id = System.Guid.NewGuid().ToString(),
             playerName = name,
+            characterClass = (CharacterClass)classID,
+            money = 0,
             level = 0,
             exp = 0,
+            stats = GetDefaultStatsByClass((CharacterClass)classID),
+            resources = new(),
+            combat = new(),
             lastSave = DateTime.Now,
-            characterClass = (CharacterClass)classID,
             items = InventoryGrid.BuildSaveData()
         };
 
@@ -52,7 +56,8 @@ public class GameManager : MonoBehaviour {
             playerPosition = Vector2.zero,
             hasPlayerPosition = false,
             mapPosition = Vector2.zero,
-            hasMapPosition = false
+            hasMapPosition = false,
+            isNewPlayer = true
         };
     }
 
@@ -75,17 +80,37 @@ public class GameManager : MonoBehaviour {
     }
 
     public void SaveCharacter() {
-        gameSaveData.characterSaveData.items = InventoryGrid.BuildSaveData();
+        FillCharacterSaveData();
         CharacterSaveSystem.SaveCharacter(gameSaveData.characterSaveData);
     }
 
     public void SaveGame() {
+        FillCharacterSaveData();
+        FillGameSaveData();
+        GameSaveSystem.SaveGame(gameSaveData);
+    }
+
+    public void FillCharacterSaveData() {
+        var player = LevelManager.Instance.GetPlayer();
+
+        gameSaveData.characterSaveData.id = player.id;
+        gameSaveData.characterSaveData.playerName = player.playerName;
+        gameSaveData.characterSaveData.characterClass = player.characterClass;
+        gameSaveData.characterSaveData.money = player.money;
+        gameSaveData.characterSaveData.level = player.level;
+        gameSaveData.characterSaveData.exp = player.exp;
+        gameSaveData.characterSaveData.stats = player.stats;
+        gameSaveData.characterSaveData.resources = player.resources;
+        gameSaveData.characterSaveData.combat = player.combat;
+
         gameSaveData.characterSaveData.items = InventoryGrid.BuildSaveData();
+    }
+
+    public void FillGameSaveData() {
         gameSaveData.playerPosition = LevelManager.Instance.GetPlayerTransform();
         gameSaveData.hasPlayerPosition = true;
         gameSaveData.mapPosition = LevelManager.Instance.GetMapTransform();
         gameSaveData.hasMapPosition = true;
-        GameSaveSystem.SaveGame(gameSaveData);
     }
 
     public void spawnInitialItems() {
@@ -125,4 +150,41 @@ public class GameManager : MonoBehaviour {
         gameSaveData = null;
         InventoryGrid.ResetGrid();
     }
+
+    public PlayerStats GetDefaultStatsByClass(CharacterClass charClass) {
+        PlayerStats stats = new PlayerStats();
+
+        switch (charClass) {
+            case CharacterClass.Warrior:
+                stats.strength = 15;
+                stats.dexterity = 10;
+                stats.intelligence = 5;
+                stats.vitality = 12;
+                break;
+
+            case CharacterClass.Mage:
+                stats.strength = 5;
+                stats.dexterity = 10;
+                stats.intelligence = 15;
+                stats.vitality = 8;
+                break;
+
+            case CharacterClass.Archer:
+                stats.strength = 10;
+                stats.dexterity = 15;
+                stats.intelligence = 8;
+                stats.vitality = 10;
+                break;
+
+            default:
+                stats.strength = 10;
+                stats.dexterity = 10;
+                stats.intelligence = 10;
+                stats.vitality = 10;
+                break;
+        }
+
+        return stats;
+    }
+
 }
