@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class InventoryGrid : MonoBehaviour {
@@ -5,6 +6,7 @@ public class InventoryGrid : MonoBehaviour {
     private int height = 5;
 
     private InventoryCell[,] grid;
+    public List<InventoryItem> items = new();
 
     void Awake() {
         grid = new InventoryCell[width, height];
@@ -49,21 +51,56 @@ public class InventoryGrid : MonoBehaviour {
         item.x = startX;
         item.y = startY;
 
-        for (int x = 0; x < item.Width; x++)
+        for (int x = 0; x < item.Width; x++) {
             for (int y = 0; y < item.Height; y++) {
                 grid[startX + x, startY + y].occupied = true;
                 grid[startX + x, startY + y].item = item;
             }
+        }
+
+        if (!items.Contains(item)) items.Add(item);
 
         return true;
     }
 
     public void RemoveItem(InventoryItem item) {
-        for (int x = 0; x < item.Width; x++)
+        for (int x = 0; x < item.Width; x++) {
             for (int y = 0; y < item.Height; y++) {
                 grid[item.x + x, item.y + y].occupied = false;
                 grid[item.x + x, item.y + y].item = null;
             }
+        }
+
+        items.Remove(item);
+    }
+
+    public void ResetGrid() {
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                grid[x, y].occupied = false;
+                grid[x, y].item = null;
+            }
+        }
+
+        items.Clear();
+    }
+
+    public List<InventoryItemSaveData> BuildSaveData() {
+        List<InventoryItemSaveData> itemsData = new();
+
+        foreach (var item in items) {
+            itemsData.Add(new InventoryItemSaveData {
+                itemId = item.data.id,
+                x = item.x,
+                y = item.y
+            });
+        }
+
+        return itemsData;
+    }
+
+    public List<InventoryItem> GetItems() {
+        return items;
     }
 
     public int Width => width;

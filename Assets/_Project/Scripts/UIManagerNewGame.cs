@@ -60,7 +60,7 @@ public class UIManagerNewGame : MonoBehaviour {
 
             Debug.Log("New Player " + name + " as " + classs);
 
-            GameManager.Instance.NewCharacterSaveData(name, classDropdown.value);
+            GameManager.Instance.NewCharacter(name, classDropdown.value);
 
             SceneManager.LoadScene("Home");
         }
@@ -70,7 +70,7 @@ public class UIManagerNewGame : MonoBehaviour {
         if (importDropdown.value > 0 && importDropdown.value <= loadedCharacters.Count) {
             var character = loadedCharacters[importDropdown.value - 1];
 
-            GameManager.Instance.FillCharacterSaveData(character);
+            GameManager.Instance.ImportCharacter(character);
 
             Debug.Log("Game start with Player " + character.playerName + " as " + character.characterClass);
 

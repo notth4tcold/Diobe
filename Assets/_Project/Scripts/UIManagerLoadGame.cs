@@ -35,7 +35,7 @@ public class UIManagerLoadGame : MonoBehaviour {
         if (loadDropdown.value > 0 && loadDropdown.value <= loadedGameSaves.Count) {
             var gameSave = loadedGameSaves[loadDropdown.value - 1];
 
-            GameManager.Instance.FillGameSaveData(gameSave);
+            GameManager.Instance.LoadGame(gameSave);
 
             Debug.Log("Game start with Player " + gameSave.characterSaveData.playerName + " as " + gameSave.characterSaveData.characterClass);
 

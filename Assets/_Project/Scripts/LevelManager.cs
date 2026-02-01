@@ -15,20 +15,13 @@ public class LevelManager : MonoBehaviour {
     }
 
     void Start() {
-        if (GameManager.Instance.HasLoadedGame()) SpawnFromSave();
-        else SpawnNewGame();
-    }
+        Vector2 defaultMapPos = new Vector2(0, -3.38f);
+        Vector2 defaultPlayerPos = Vector2.zero;
 
-    void SpawnNewGame() {
-        SpawnMap(new Vector2(0, -3.38f));
-        SpawnPlayer(Vector2.zero);
-    }
-
-    void SpawnFromSave() {
         var gameSave = GameManager.Instance.gameSaveData;
-        SpawnMap(gameSave.mapPosition);
-        SpawnPlayer(gameSave.playerPosition);
-        Debug.Log("Game loaded sucessfully");
+
+        SpawnMap(gameSave.hasMapPosition ? gameSave.mapPosition : defaultMapPos);
+        SpawnPlayer(gameSave.hasPlayerPosition ? gameSave.playerPosition : defaultPlayerPos);
     }
 
     void SpawnPlayer(Vector2 position) {

@@ -1,73 +1,44 @@
-using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class InventoryUI : MonoBehaviour {
     [Header("References")]
-    [SerializeField] private InventoryGrid inventoryGrid;
-    [SerializeField] private Transform gridParent;
     [SerializeField] private Transform itemsParent;
-    [SerializeField] private InventoryCellUI cellPrefab;
     [SerializeField] private InventoryItemUI itemPrefab;
+    [SerializeField] private InventoryCellUI[] cells;
 
-    private float cellSize;
-    private InventoryCellUI[] cells;
+    private Dictionary<InventoryItem, InventoryItemUI> itemToUI = new();
+    private InventoryGrid inventoryGrid;
 
-    [SerializeField]
-    private ItemData[] itemsToSpawn;
+    void Awake() {
+        inventoryGrid = GameManager.Instance.InventoryGrid;
+    }
 
     void Start() {
-        CreateGrid();
-
-        Canvas.ForceUpdateCanvases();
-        LayoutRebuilder.ForceRebuildLayoutImmediate(
-            (RectTransform)gridParent
-        );
-
-        StartCoroutine(SpawnAfterLayout());
+        ConfigGridIndex();
+        BuildFromGrid();
     }
 
-    void CreateGrid() {
+    void ConfigGridIndex() {
         int totalCells = inventoryGrid.Width * inventoryGrid.Height;
-        cells = new InventoryCellUI[totalCells];
-
-        InventoryCellUI temp = Instantiate(cellPrefab, gridParent);
-        cellSize = ((RectTransform)temp.transform).sizeDelta.x;
-        Destroy(temp.gameObject);
 
         for (int i = 0; i < totalCells; i++) {
-            InventoryCellUI cell = Instantiate(cellPrefab, gridParent);
-            cell.SetIndex(i);
-            cells[i] = cell;
+            cells[i].SetIndex(i);
         }
     }
 
-    IEnumerator SpawnAfterLayout() {
-        yield return null;
+    public void BuildFromGrid() {
+        ClearUI();
 
-        SpawnItems();
-    }
-
-    public void SpawnItems() {
-        for (int i = 0; i < itemsToSpawn.Length; i++) {
-            InventoryItem item = new InventoryItem(itemsToSpawn[i], 0, 0);
-            Vector2Int pos;
-
-            if (!inventoryGrid.FindEmptyPlace(item, out pos)) return;
-            inventoryGrid.PlaceItem(item, pos.x, pos.y);
-
-            InventoryItemUI itemUI = Instantiate(itemPrefab, itemsParent);
-            itemUI.Init(item, this);
+        foreach (var item in inventoryGrid.GetItems()) {
+            CreateInventoryItemUI(item);
         }
     }
 
-    public Vector2 GridToScreen(int x, int y) {
-        int index = y * inventoryGrid.Width + x;
-        if (index < 0 || index >= cells.Length) return Vector2.zero;
-
-        RectTransform cellRect = (RectTransform)cells[index].transform;
-
-        return cellRect.anchoredPosition + new Vector2(-CellSize * 0.5f, CellSize * 0.5f);
+    public void CreateInventoryItemUI(InventoryItem item) {
+        InventoryItemUI itemUI = Instantiate(itemPrefab, itemsParent);
+        itemUI.Init(item, this);
+        itemToUI[item] = itemUI;
     }
 
     public Vector2Int ScreenToGrid(Vector2 screenPos) {
@@ -83,6 +54,27 @@ public class InventoryUI : MonoBehaviour {
         }
 
         return new Vector2Int(-1, -1);
+    }
+
+    public Vector2 GridToScreen(int x, int y) {
+        int index = y * inventoryGrid.Width + x;
+        if (index < 0 || index >= cells.Length) return Vector2.zero;
+
+        RectTransform cellRect = (RectTransform)cells[index].transform;
+
+        return cellRect.anchoredPosition + new Vector2(-CellSize * 0.5f, CellSize * 0.5f);
+    }
+
+    public RectTransform GetCellRect(Vector2Int pos) {
+        if (pos.x < 0 || pos.y < 0) return null;
+
+        if (pos.x >= inventoryGrid.Width || pos.y >= inventoryGrid.Height) return null;
+
+        int index = pos.y * inventoryGrid.Width + pos.x;
+
+        if (index < 0 || index >= cells.Length) return null;
+
+        return (RectTransform)cells[index].transform;
     }
 
     public void TryPlaceItem(InventoryItem item, InventoryItemUI itemUI, Vector2Int gridPos) {
@@ -107,8 +99,6 @@ public class InventoryUI : MonoBehaviour {
         bool canPlace = inventoryGrid.CanPlaceItem(item, pos.x, pos.y);
         Color color = canPlace ? Color.green : Color.red;
 
-        Debug.Log(canPlace);
-
         for (int x = 0; x < item.Width; x++) {
             for (int y = 0; y < item.Height; y++) {
 
@@ -129,17 +119,33 @@ public class InventoryUI : MonoBehaviour {
             cell.ClearHighlight();
     }
 
-    public RectTransform GetCellRect(Vector2Int pos) {
-        if (pos.x < 0 || pos.y < 0) return null;
+    public void ClearUI() {
+        foreach (Transform child in itemsParent)
+            Destroy(child.gameObject);
 
-        if (pos.x >= inventoryGrid.Width || pos.y >= inventoryGrid.Height) return null;
-
-        int index = pos.y * inventoryGrid.Width + pos.x;
-
-        if (index < 0 || index >= cells.Length) return null;
-
-        return (RectTransform)cells[index].transform;
+        itemToUI.Clear();
     }
 
-    public float CellSize => cellSize;
+    void OnEnable() {
+        GameManager.OnItemAdded += HandleItemAdded;
+        GameManager.OnItemRemoved += HandleItemRemoved;
+    }
+
+    void OnDisable() {
+        GameManager.OnItemAdded -= HandleItemAdded;
+        GameManager.OnItemRemoved -= HandleItemRemoved;
+    }
+
+    void HandleItemAdded(InventoryItem item) {
+        CreateInventoryItemUI(item);
+    }
+
+    void HandleItemRemoved(InventoryItem item) {
+        if (itemToUI.TryGetValue(item, out var ui)) {
+            Destroy(ui.gameObject);
+            itemToUI.Remove(item);
+        }
+    }
+
+    public float CellSize => ((RectTransform)cells[0].transform).sizeDelta.x;
 }

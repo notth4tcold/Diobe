@@ -30,9 +30,11 @@ public class InventoryItemUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     }
 
     public void OnDrag(PointerEventData eventData) {
-        rect.position = eventData.position;// + new Vector2(-rect.sizeDelta.x * 0.5f, rect.sizeDelta.y * 0.5f);
+        rect.position = eventData.position + new Vector2(-rect.sizeDelta.x * 0.5f, rect.sizeDelta.y * 0.5f);
 
-        Vector2Int gridPos = inventoryUI.ScreenToGrid(eventData.position);
+        Vector2 gridPosCheck = new Vector2(rect.position.x, rect.position.y) + new Vector2(inventoryUI.CellSize * 0.5f, -inventoryUI.CellSize * 0.5f);
+
+        Vector2Int gridPos = inventoryUI.ScreenToGrid(gridPosCheck);
         if (gridPos.x >= 0 && gridPos.y >= 0) {
             inventoryUI.PreviewPlacement(item, gridPos);
         }
@@ -41,7 +43,9 @@ public class InventoryItemUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     public void OnEndDrag(PointerEventData eventData) {
         image.raycastTarget = true;
 
-        Vector2Int gridPos = inventoryUI.ScreenToGrid(eventData.position);
+        Vector2 gridPosCheck = new Vector2(rect.position.x, rect.position.y) + new Vector2(inventoryUI.CellSize * 0.5f, -inventoryUI.CellSize * 0.5f);
+
+        Vector2Int gridPos = inventoryUI.ScreenToGrid(gridPosCheck);
         inventoryUI.TryPlaceItem(item, this, gridPos);
 
         inventoryUI.ClearPreview();
@@ -51,12 +55,7 @@ public class InventoryItemUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         RectTransform cell = inventoryUI.GetCellRect(pos);
         if (cell == null) return;
 
-        Vector2 topLeft =
-        cell.anchoredPosition +
-        new Vector2(
-            -cell.rect.width * 0.5f,
-             cell.rect.height * 0.5f
-        );
+        Vector2 topLeft = cell.anchoredPosition + new Vector2(-cell.rect.width * 0.5f, cell.rect.height * 0.5f);
 
         rect.anchoredPosition = topLeft;
     }
