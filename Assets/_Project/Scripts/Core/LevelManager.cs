@@ -12,9 +12,7 @@ public class LevelManager : MonoBehaviour {
 
     void Awake() {
         Instance = this;
-    }
 
-    void Start() {
         Vector2 defaultMapPos = new Vector2(0, -3.38f);
         Vector2 defaultPlayerPos = Vector2.zero;
 

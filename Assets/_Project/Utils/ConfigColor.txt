@@ -6,3 +6,6 @@ Config Color
 181818 pressed
 
 FF0000 30% disabled
+
+96000A health
+090096 Mana
