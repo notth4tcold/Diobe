@@ -2,10 +2,16 @@ using UnityEngine;
 
 [System.Serializable]
 public class PlayerCombat {
+    private PlayerStats stats;
+
+    public void Initialize(PlayerStats stats) {
+        this.stats = stats;
+    }
+
     //Defence
     public int armor;
-    public float dodgeChance;
-    public float blockChance; //escudo
+    public float dodgeChance = 0.01f; //1% de chance de desviar
+    public float blockChance = 0.3f; //30% de chance do escudo bloquear
 
     public int fireRes;
     public int iceRes;
@@ -14,10 +20,12 @@ public class PlayerCombat {
     public int magicRes; //resistência a dano mágico puro, não elemental
 
     //Attack
-    public int attack;
+    public int attack = 10;
     public int attackSpeed;
-    public float hitChance;
-    public float critChance;
+
+    public float hitChance = 0.7f; //70% de chance de acertar o hit
+    public float critChance = 0.1f; //1% de chance de critico
+    public float critMultiplier = 2;
 
     public int weaponAttack;
     public int weaponFireAttack;
@@ -26,12 +34,6 @@ public class PlayerCombat {
     public int weaponPoisonAttack;
 
     public float strengthMultiplier = 1f;
-
-    private PlayerStats stats;
-
-    public void Initialize(PlayerStats stats) {
-        this.stats = stats;
-    }
 
     public int WeaponDamage => attack + weaponAttack;
     public int Damage => WeaponDamage + Mathf.RoundToInt(stats.strength * strengthMultiplier);

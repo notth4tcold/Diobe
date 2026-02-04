@@ -23,6 +23,7 @@ public class CharacterSaveSystem {
 
         File.WriteAllText(IndexPath, JsonUtility.ToJson(index, true));
 
+        AudioManager.Instance.PlaySFX(SFX.UISaveGame);
         Debug.Log("Character saved - Player " + data.playerName + " as " + data.characterClass);
     }
 

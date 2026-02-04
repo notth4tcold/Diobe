@@ -18,6 +18,7 @@ public class PlayerMovement : MonoBehaviour {
     private bool isJumping;
     private bool jumpHeld;
     private float jumpTimeCounter;
+    private bool wasGrounded;
 
     void Awake() {
         rb = GetComponent<Rigidbody2D>();
@@ -27,6 +28,7 @@ public class PlayerMovement : MonoBehaviour {
     void FixedUpdate() {
         HandleMove();
         HandleJump();
+        CheckLand();
     }
 
     void HandleMove() {
@@ -64,6 +66,7 @@ public class PlayerMovement : MonoBehaviour {
     void TryStartJump() {
         if (!groundCheck.IsGrounded() || isJumping) return;
 
+        AudioManager.Instance.PlaySFX(SFX.PlayerJump);
         isJumping = true;
         jumpTimeCounter = maxJumpTime;
 
@@ -72,5 +75,19 @@ public class PlayerMovement : MonoBehaviour {
 
     public void ReleaseJump() {
         isJumping = false;
+    }
+
+    void CheckLand() {
+        bool grounded = groundCheck.IsGrounded();
+
+        if (!wasGrounded && grounded) {
+            OnLand();
+        }
+
+        wasGrounded = grounded;
+    }
+
+    void OnLand() {
+        AudioManager.Instance.PlaySFX(SFX.PlayerLand);
     }
 }

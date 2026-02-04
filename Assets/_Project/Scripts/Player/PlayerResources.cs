@@ -2,6 +2,12 @@ using UnityEngine;
 
 [System.Serializable]
 public class PlayerResources {
+    private PlayerStats stats;
+
+    public void Initialize(PlayerStats playerStats) {
+        stats = playerStats;
+    }
+
     public int health;
     public int mana;
 
@@ -17,18 +23,10 @@ public class PlayerResources {
     public float itemHealthRegenBonus;
     public float itemManaRegenBonus;
 
-    private PlayerStats stats;
-
-    public void Initialize(PlayerStats playerStats) {
-        stats = playerStats;
-    }
-
     public int MaxHealth => baseHealth + Mathf.RoundToInt(stats.vitality * vitalityMultiplier);
     public int MaxMana => baseMana + Mathf.RoundToInt(stats.intelligence * intelligenceMultiplier);
-
     public float HealthRegenPercent => baseHealthRegenPercent + stats.vitality * vitalityRegenMultiplier + itemHealthRegenBonus;
     public float HealthRegen => MaxHealth * HealthRegenPercent;
-
     public float ManaRegenPercent => baseManaRegenPercent + stats.intelligence * intelligenceRegenMultiplier + itemManaRegenBonus;
     public float ManaRegen => MaxMana * ManaRegenPercent;
 }

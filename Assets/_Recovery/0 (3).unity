@@ -4473,35 +4473,7 @@ PrefabInstance:
     - target: {fileID: 8239632981373708632, guid: e3ae021f557e85744af55496875b6a5b, type: 3}
       propertyPath: uiNewGame
       value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 8239632981373708632, guid: e3ae021f557e85744af55496875b6a5b, type: 3}
-      propertyPath: playerJump
-      value: 
-      objectReference: {fileID: 8300000, guid: 3b2b1b69ab6277147bd8d300e6065a82, type: 3}
-    - target: {fileID: 8239632981373708632, guid: e3ae021f557e85744af55496875b6a5b, type: 3}
-      propertyPath: playerLand
-      value: 
-      objectReference: {fileID: 8300000, guid: b985bda3cafa6ef4a94f51fe51a928bc, type: 3}
-    - target: {fileID: 8239632981373708632, guid: e3ae021f557e85744af55496875b6a5b, type: 3}
-      propertyPath: uiSaveGame
-      value: 
-      objectReference: {fileID: 8300000, guid: d658224eb4cf4804d886a62382756ec0, type: 3}
-    - target: {fileID: 8239632981373708632, guid: e3ae021f557e85744af55496875b6a5b, type: 3}
-      propertyPath: uiEquipItem
-      value: 
-      objectReference: {fileID: 8300000, guid: 991d29779dcb95c44830e7275b3aed73, type: 3}
-    - target: {fileID: 8239632981373708632, guid: e3ae021f557e85744af55496875b6a5b, type: 3}
-      propertyPath: uiUnequipItem
-      value: 
-      objectReference: {fileID: 8300000, guid: 87a032734e28dad46a0651ba4de54716, type: 3}
-    - target: {fileID: 8239632981373708632, guid: e3ae021f557e85744af55496875b6a5b, type: 3}
-      propertyPath: uiInventoryOpen
-      value: 
-      objectReference: {fileID: 8300000, guid: 465186b58c8fefb4697c3b559d2c883c, type: 3}
-    - target: {fileID: 8239632981373708632, guid: e3ae021f557e85744af55496875b6a5b, type: 3}
-      propertyPath: explorationMusic
-      value: 
-      objectReference: {fileID: 8300000, guid: 94544766e02bfb6448c1b8262e1c0a31, type: 3}
+      objectReference: {fileID: 8300000, guid: 7803a89de1028124983287016bb2898a, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

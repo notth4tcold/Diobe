@@ -25,6 +25,7 @@ public class InventoryItemUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     }
 
     public void OnBeginDrag(PointerEventData eventData) {
+        AudioManager.Instance.PlaySFX(SFX.UIUnequipItem);
         image.raycastTarget = false;
         transform.SetAsLastSibling();
     }
@@ -41,6 +42,7 @@ public class InventoryItemUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     }
 
     public void OnEndDrag(PointerEventData eventData) {
+        AudioManager.Instance.PlaySFX(SFX.UIEquipItem);
         image.raycastTarget = true;
 
         Vector2 gridPosCheck = new Vector2(rect.position.x, rect.position.y) + new Vector2(inventoryUI.CellSize * 0.5f, -inventoryUI.CellSize * 0.5f);

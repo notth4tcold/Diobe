@@ -23,6 +23,9 @@ public class UIManagerNewGame : MonoBehaviour {
     [SerializeField]
     private GameObject importGameobject;
 
+    [SerializeField]
+    private TMP_Text importText;
+
     List<CharacterSaveData> loadedCharacters;
 
     [SerializeField]
@@ -31,10 +34,14 @@ public class UIManagerNewGame : MonoBehaviour {
     [SerializeField]
     private GameObject importStartGameobject;
 
+    [SerializeField]
+    private DialogueUI dialogueUI;
+
     void Start() {
         LoadCharactersIntoDropdown();
         importGameobject.SetActive(false);
         importStartGameobject.SetActive(false);
+        importText.text = "Import";
     }
 
     void LoadCharactersIntoDropdown() {
@@ -54,31 +61,40 @@ public class UIManagerNewGame : MonoBehaviour {
     }
 
     public void OnStartGameClicked() {
+        AudioManager.Instance.PlaySFX(SFX.UIButton);
         if (nameInput.text != "") {
             string name = nameInput.text;
             string classs = classDropdown.options[classDropdown.value].text;
+            GameManager.Instance.NewCharacter(name, classDropdown.value);
 
             Debug.Log("New Player " + name + " as " + classs);
 
-            GameManager.Instance.NewCharacter(name, classDropdown.value);
-
             SceneManager.LoadScene("Home");
+        } else {
+            dialogueUI.Show("Please, type your player name!");
         }
     }
 
     public void OnImportStartClicked() {
+        AudioManager.Instance.PlaySFX(SFX.UIButton);
         if (importDropdown.value > 0 && importDropdown.value <= loadedCharacters.Count) {
             var character = loadedCharacters[importDropdown.value - 1];
-
             GameManager.Instance.ImportCharacter(character);
 
             Debug.Log("Game start with Player " + character.playerName + " as " + character.characterClass);
 
             SceneManager.LoadScene("Home");
+        } else {
+            dialogueUI.Show("Please, select your character!");
         }
     }
 
     public void OnImportClicked() {
+        AudioManager.Instance.PlaySFX(SFX.UIButton);
+
+        if (importGameobject.activeSelf) importText.text = "Import";
+        else importText.text = "New Player";
+
         nameGameobject.SetActive(!nameGameobject.activeSelf);
         classGameobject.SetActive(!classGameobject.activeSelf);
         startGameobject.SetActive(!startGameobject.activeSelf);
@@ -87,6 +103,7 @@ public class UIManagerNewGame : MonoBehaviour {
     }
 
     public void OnBackClicked() {
+        AudioManager.Instance.PlaySFX(SFX.UICancel);
         SceneManager.LoadScene("MainMenu");
     }
 }

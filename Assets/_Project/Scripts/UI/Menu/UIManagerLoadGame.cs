@@ -9,6 +9,9 @@ public class UIManagerLoadGame : MonoBehaviour {
     [SerializeField]
     private TMP_Dropdown loadDropdown;
 
+    [SerializeField]
+    private DialogueUI dialogueUI;
+
     List<GameSaveData> loadedGameSaves;
 
     void Start() {
@@ -33,17 +36,21 @@ public class UIManagerLoadGame : MonoBehaviour {
 
     public void OnLoadGameClicked() {
         if (loadDropdown.value > 0 && loadDropdown.value <= loadedGameSaves.Count) {
-            var gameSave = loadedGameSaves[loadDropdown.value - 1];
+            AudioManager.Instance.PlaySFX(SFX.UIButton);
 
+            var gameSave = loadedGameSaves[loadDropdown.value - 1];
             GameManager.Instance.LoadGame(gameSave);
 
             Debug.Log("Game start with Player " + gameSave.characterSaveData.playerName + " as " + gameSave.characterSaveData.characterClass);
 
             SceneManager.LoadScene("Home");
+        } else {
+            dialogueUI.Show("Please, select your save!");
         }
     }
 
     public void OnBackClicked() {
+        AudioManager.Instance.PlaySFX(SFX.UICancel);
         SceneManager.LoadScene("MainMenu");
     }
 }
