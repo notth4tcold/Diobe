@@ -41,7 +41,7 @@ public class DialogueUI : MonoBehaviour {
 
         foreach (char c in fullText) {
             dialogueText.text += c;
-            yield return new WaitForSeconds(textSpeed);
+            yield return new WaitForSecondsRealtime(textSpeed);
         }
 
         isTyping = false;
@@ -70,5 +70,9 @@ public class DialogueUI : MonoBehaviour {
     void Close() {
         background.SetActive(false);
         gameObject.SetActive(false);
+    }
+
+    public bool IsOpened() {
+        return gameObject.activeSelf && background.activeSelf;
     }
 }

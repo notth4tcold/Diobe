@@ -22,6 +22,12 @@ public class LevelManager : MonoBehaviour {
         SpawnPlayer(gameSave.hasPlayerPosition ? gameSave.playerPosition : defaultPlayerPos, gameSave);
     }
 
+
+    void Start() {
+        CameraManager.Instance.SetTarget(GetPlayer().transform);
+    }
+
+
     void SpawnPlayer(Vector2 position, GameSaveData gameSave) {
         playerInstance = Instantiate(playerPrefab, new Vector2(position.x, position.y), Quaternion.identity);
 

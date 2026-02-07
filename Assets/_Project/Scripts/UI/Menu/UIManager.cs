@@ -26,6 +26,7 @@ public class UIManager : MonoBehaviour {
     }
 
     void Update() {
+        if (dialogueUI.IsOpened()) return;
         if (Keyboard.current.escapeKey.wasPressedThisFrame) {
             if (isInventoryOpen) CloseInventory();
             else if (isPaused) Resume();
@@ -76,18 +77,12 @@ public class UIManager : MonoBehaviour {
     public void OnSaveCharacterClicked() {
         AudioManager.Instance.PlaySFX(SFX.UIButton);
         dialogueUI.Show("Character saved!");
-        Time.timeScale = 1f;
-        pauseUI.SetActive(false);
-        isPaused = false;
         GameManager.Instance.SaveCharacter();
     }
 
     public void OnSaveGameClicked() {
         AudioManager.Instance.PlaySFX(SFX.UIButton);
         dialogueUI.Show("Game saved!");
-        Time.timeScale = 1f;
-        pauseUI.SetActive(false);
-        isPaused = false;
         GameManager.Instance.SaveGame();
     }
 

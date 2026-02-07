@@ -1052,7 +1052,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 707775749}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -4467,9 +4467,21 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 8300000, guid: 279647999528fe94581e2936f97f5b79, type: 3}
     - target: {fileID: 8239632981373708632, guid: e3ae021f557e85744af55496875b6a5b, type: 3}
+      propertyPath: uiVolume
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8239632981373708632, guid: e3ae021f557e85744af55496875b6a5b, type: 3}
       propertyPath: menuMusic
       value: 
       objectReference: {fileID: 8300000, guid: ab2eb41bd68286449a7423d84969140e, type: 3}
+    - target: {fileID: 8239632981373708632, guid: e3ae021f557e85744af55496875b6a5b, type: 3}
+      propertyPath: playerRun
+      value: 
+      objectReference: {fileID: 8300000, guid: ae7cab8cb7774fc4e90ee216167e0881, type: 3}
+    - target: {fileID: 8239632981373708632, guid: e3ae021f557e85744af55496875b6a5b, type: 3}
+      propertyPath: sfxVolume
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8239632981373708632, guid: e3ae021f557e85744af55496875b6a5b, type: 3}
       propertyPath: uiNewGame
       value: 
@@ -4487,9 +4499,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 8300000, guid: d658224eb4cf4804d886a62382756ec0, type: 3}
     - target: {fileID: 8239632981373708632, guid: e3ae021f557e85744af55496875b6a5b, type: 3}
+      propertyPath: musicVolume
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8239632981373708632, guid: e3ae021f557e85744af55496875b6a5b, type: 3}
       propertyPath: uiEquipItem
       value: 
       objectReference: {fileID: 8300000, guid: 991d29779dcb95c44830e7275b3aed73, type: 3}
+    - target: {fileID: 8239632981373708632, guid: e3ae021f557e85744af55496875b6a5b, type: 3}
+      propertyPath: masterVolume
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8239632981373708632, guid: e3ae021f557e85744af55496875b6a5b, type: 3}
       propertyPath: uiUnequipItem
       value: 

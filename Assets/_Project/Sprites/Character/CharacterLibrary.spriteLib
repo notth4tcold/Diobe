@@ -1,0 +1,114 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &1
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5e6fedc2472449cead18ef23b5cb30d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.2D.Animation.Runtime::UnityEngine.U2D.Animation.SpriteLibrarySourceAsset
+  m_Library:
+  - m_Name: Head
+    m_Hash: 130111906
+    m_CategoryList: []
+    m_OverrideEntries:
+    - m_Name: Default
+      m_Hash: 753088835
+      m_Sprite: {fileID: 6943535168657398750, guid: 61d43c74edab0be4fba40b6fee7ac1f0, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 6943535168657398750, guid: 61d43c74edab0be4fba40b6fee7ac1f0, type: 3}
+    - m_Name: Iron
+      m_Hash: 406998946
+      m_Sprite: {fileID: 6943535168657398750, guid: 831f21cb76021e244a6c91fc093f6fb9, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 6943535168657398750, guid: 831f21cb76021e244a6c91fc093f6fb9, type: 3}
+    m_FromMain: 0
+    m_EntryOverrideCount: 2
+  - m_Name: Torso
+    m_Hash: 647926657
+    m_CategoryList: []
+    m_OverrideEntries:
+    - m_Name: Default
+      m_Hash: 753088835
+      m_Sprite: {fileID: 1221316241063588470, guid: f4d9bb5ce6f6164448aaf217dbd8a958, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 1221316241063588470, guid: f4d9bb5ce6f6164448aaf217dbd8a958, type: 3}
+    - m_Name: Iron
+      m_Hash: 406998946
+      m_Sprite: {fileID: 1221316241063588470, guid: 3bfe346f50cfdb74cadf50c8a67d60e6, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 1221316241063588470, guid: 3bfe346f50cfdb74cadf50c8a67d60e6, type: 3}
+    m_FromMain: 0
+    m_EntryOverrideCount: 2
+  - m_Name: lArm
+    m_Hash: 266761921
+    m_CategoryList: []
+    m_OverrideEntries:
+    - m_Name: Default
+      m_Hash: 753088835
+      m_Sprite: {fileID: -8473140855517410513, guid: 60b56c1b39ffc6f4ea3de8c6d116fc96, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: -8473140855517410513, guid: 60b56c1b39ffc6f4ea3de8c6d116fc96, type: 3}
+    - m_Name: Iron
+      m_Hash: 406998946
+      m_Sprite: {fileID: -8473140855517410513, guid: b878ef0e91ec6a04b9cd44bb71bfd529, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: -8473140855517410513, guid: b878ef0e91ec6a04b9cd44bb71bfd529, type: 3}
+    m_FromMain: 0
+    m_EntryOverrideCount: 2
+  - m_Name: rArm
+    m_Hash: 1059083885
+    m_CategoryList: []
+    m_OverrideEntries:
+    - m_Name: Default
+      m_Hash: 753088835
+      m_Sprite: {fileID: 6609483026999728973, guid: 81e586fd21ada6a4c9e014b4f6815436, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 6609483026999728973, guid: 81e586fd21ada6a4c9e014b4f6815436, type: 3}
+    - m_Name: Iron
+      m_Hash: 406998946
+      m_Sprite: {fileID: 6609483026999728973, guid: 8a042d81dc70fd1419ca2ea3911ce6bc, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 6609483026999728973, guid: 8a042d81dc70fd1419ca2ea3911ce6bc, type: 3}
+    m_FromMain: 0
+    m_EntryOverrideCount: 2
+  - m_Name: lLeg
+    m_Hash: 577275930
+    m_CategoryList: []
+    m_OverrideEntries:
+    - m_Name: Default
+      m_Hash: 753088835
+      m_Sprite: {fileID: 99286466354240389, guid: b0827fe1b6c5b014bb25db49b5c78c13, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 99286466354240389, guid: b0827fe1b6c5b014bb25db49b5c78c13, type: 3}
+    - m_Name: Iron
+      m_Hash: 406998946
+      m_Sprite: {fileID: 99286466354240389, guid: d1732b8daf24786428a9b18ca6f24638, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 99286466354240389, guid: d1732b8daf24786428a9b18ca6f24638, type: 3}
+    m_FromMain: 0
+    m_EntryOverrideCount: 2
+  - m_Name: rLeg
+    m_Hash: 313436342
+    m_CategoryList: []
+    m_OverrideEntries:
+    - m_Name: Default
+      m_Hash: 753088835
+      m_Sprite: {fileID: 1056240715786006106, guid: 4bf5a686ac7e8a94ca5c67d0c5aefea1, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 1056240715786006106, guid: 4bf5a686ac7e8a94ca5c67d0c5aefea1, type: 3}
+    - m_Name: Iron
+      m_Hash: 406998946
+      m_Sprite: {fileID: 1056240715786006106, guid: dd508bb10f9dc6643a69948509084bbc, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 1056240715786006106, guid: dd508bb10f9dc6643a69948509084bbc, type: 3}
+    m_FromMain: 0
+    m_EntryOverrideCount: 2
+  m_PrimaryLibraryGUID: 
+  m_ModificationHash: 639060214824588486
+  m_Version: 1

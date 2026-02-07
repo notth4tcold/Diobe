@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.U2D.Animation;
 using Random = UnityEngine.Random;
 
 public class Player : MonoBehaviour {
@@ -17,6 +18,22 @@ public class Player : MonoBehaviour {
 
     public event Action<float> OnHealthPercentChanged;
     public event Action<float> OnManaPercentChanged;
+
+    [SerializeField] private SpriteResolver torsoResolver;
+    [SerializeField] private SpriteResolver headResolver;
+    [SerializeField] private SpriteResolver lArmResolver;
+    [SerializeField] private SpriteResolver rArmResolver;
+    [SerializeField] private SpriteResolver lLegResolver;
+    [SerializeField] private SpriteResolver rLegResolver;
+
+    void Start() {
+        torsoResolver.SetCategoryAndLabel("Torso", "Iron");
+        headResolver.SetCategoryAndLabel("Head", "Iron");
+        lArmResolver.SetCategoryAndLabel("lArm", "Iron");
+        rArmResolver.SetCategoryAndLabel("rArm", "Iron");
+        lLegResolver.SetCategoryAndLabel("lLeg", "Iron");
+        rLegResolver.SetCategoryAndLabel("rLeg", "Iron");
+    }
 
     void Update() {
         Regenerate(Time.deltaTime);

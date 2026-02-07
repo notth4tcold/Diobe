@@ -25,6 +25,7 @@ public class AudioManager : MonoBehaviour {
     [SerializeField] AudioClip playerPickupGold;
     [SerializeField] AudioClip playerJump;
     [SerializeField] AudioClip playerLand;
+    [SerializeField] AudioClip playerRun;
     [SerializeField] AudioClip slash;
     [SerializeField] AudioClip fireHit;
     [SerializeField] AudioClip iceHit;
@@ -83,6 +84,8 @@ public class AudioManager : MonoBehaviour {
             case SFX.PlayerPickupGold: sfxSource.PlayOneShot(playerPickupGold); break;
             case SFX.PlayerJump: sfxSource.PlayOneShot(playerJump); break;
             case SFX.PlayerLand: sfxSource.PlayOneShot(playerLand); break;
+            case SFX.PlayerRun: sfxSource.PlayOneShot(playerRun); break;
+
             case SFX.Slash: sfxSource.PlayOneShot(slash); break;
             case SFX.FireHit: sfxSource.PlayOneShot(fireHit); break;
             case SFX.IceHit: sfxSource.PlayOneShot(iceHit); break;
@@ -133,6 +136,7 @@ public enum SFX {
     PlayerPickupGold,
     PlayerJump,
     PlayerLand,
+    PlayerRun,
 
     // Combat
     Slash,
