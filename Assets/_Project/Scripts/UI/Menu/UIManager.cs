@@ -1,19 +1,23 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour {
 
-    [SerializeField]
-    private GameObject pauseUI;
+    public static UIManager Instance { get; private set; }
+
+    private PlayerInputHandler inputHandler;
+
+    [SerializeField] private GameObject pauseUI;
     private bool isPaused;
 
-    [SerializeField]
-    private GameObject inventoryUI;
+    [SerializeField] private GameObject inventoryUI;
     private bool isInventoryOpen;
 
-    [SerializeField]
-    private DialogueUI dialogueUI;
+    [SerializeField] private DialogueUI dialogueUI;
+
+    void Awake() {
+        Instance = this;
+    }
 
     void Start() {
         AudioManager.Instance.PlayMusic(MusicType.Exploration);
@@ -23,20 +27,33 @@ public class UIManager : MonoBehaviour {
 
         isInventoryOpen = false;
         inventoryUI.SetActive(isInventoryOpen);
+
+        InitializeInput();
     }
 
-    void Update() {
+    void InitializeInput() {
+        var player = LevelManager.Instance.GetPlayer();
+        if (player == null) return;
+
+        inputHandler = player.GetComponent<PlayerInputHandler>();
+        if (inputHandler == null) return;
+
+        inputHandler.OnPausePressed += HandlePause;
+        inputHandler.OnInventoryPressed += HandleInventory;
+    }
+
+    void HandlePause() {
         if (dialogueUI.IsOpened()) return;
-        if (Keyboard.current.escapeKey.wasPressedThisFrame) {
-            if (isInventoryOpen) CloseInventory();
-            else if (isPaused) Resume();
-            else Pause();
-        }
-        if (Keyboard.current.eKey.wasPressedThisFrame) {
-            if (isPaused) return;
-            if (isInventoryOpen) CloseInventory();
-            else OpenInventory();
-        }
+        if (isInventoryOpen) CloseInventory();
+        else if (isPaused) Resume();
+        else Pause();
+    }
+
+    void HandleInventory() {
+        if (dialogueUI.IsOpened()) return;
+        if (isPaused) return;
+        if (isInventoryOpen) CloseInventory();
+        else OpenInventory();
     }
 
     void Resume() {
@@ -91,5 +108,12 @@ public class UIManager : MonoBehaviour {
         Time.timeScale = 1f;
         GameManager.Instance.ResetGameState();
         SceneManager.LoadScene("MainMenu");
+    }
+
+    public bool IsUIBlocking => isPaused || isInventoryOpen;
+
+    void OnDestroy() {
+        inputHandler.OnPausePressed -= HandlePause;
+        inputHandler.OnInventoryPressed -= HandleInventory;
     }
 }

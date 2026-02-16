@@ -77,7 +77,7 @@ public class InventoryUI : MonoBehaviour {
         return (RectTransform)cells[index].transform;
     }
 
-    public void TryPlaceItem(InventoryItem item, InventoryItemUI itemUI, Vector2Int gridPos) {
+    public bool TryPlaceItem(InventoryItem item, InventoryItemUI itemUI, Vector2Int gridPos) {
         int oldX = item.x;
         int oldY = item.y;
 
@@ -86,11 +86,13 @@ public class InventoryUI : MonoBehaviour {
         if (!inventoryGrid.CanPlaceItem(item, gridPos.x, gridPos.y)) {
             inventoryGrid.PlaceItem(item, oldX, oldY);
             itemUI.SnapToGrid(new Vector2Int(oldX, oldY));
-            return;
+            return false;
         }
 
         inventoryGrid.PlaceItem(item, gridPos.x, gridPos.y);
         itemUI.SnapToGrid(gridPos);
+
+        return true;
     }
 
     public void PreviewPlacement(InventoryItem item, Vector2Int pos) {
@@ -145,6 +147,13 @@ public class InventoryUI : MonoBehaviour {
             Destroy(ui.gameObject);
             itemToUI.Remove(item);
         }
+    }
+
+    public bool IsInsideGrid(Vector2Int pos) {
+        return pos.x >= 0 &&
+               pos.y >= 0 &&
+               pos.x < inventoryGrid.Width &&
+               pos.y < inventoryGrid.Height;
     }
 
     public float CellSize => ((RectTransform)cells[0].transform).sizeDelta.x;

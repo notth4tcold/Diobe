@@ -42,13 +42,19 @@ public class InventoryItemUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     }
 
     public void OnEndDrag(PointerEventData eventData) {
-        AudioManager.Instance.PlaySFX(SFX.UIEquipItem);
         image.raycastTarget = true;
 
         Vector2 gridPosCheck = new Vector2(rect.position.x, rect.position.y) + new Vector2(inventoryUI.CellSize * 0.5f, -inventoryUI.CellSize * 0.5f);
 
         Vector2Int gridPos = inventoryUI.ScreenToGrid(gridPosCheck);
-        inventoryUI.TryPlaceItem(item, this, gridPos);
+        bool isInsideGrid = inventoryUI.IsInsideGrid(gridPos);
+
+        if (isInsideGrid && inventoryUI.TryPlaceItem(item, this, gridPos)) {
+            AudioManager.Instance.PlaySFX(SFX.UIEquipItem);
+        } else if (!isInsideGrid) {
+            AudioManager.Instance.PlaySFX(SFX.UIUnequipItem);
+            GameManager.Instance.DropItem(item);
+        }
 
         inventoryUI.ClearPreview();
     }

@@ -132,13 +132,24 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-    public void SpawnItem(ItemData data) {
+    public bool SpawnItem(ItemData data) {
         InventoryItem item = new InventoryItem(data, 0, 0);
 
         if (InventoryGrid.FindEmptyPlace(item, out Vector2Int pos)) {
             InventoryGrid.PlaceItem(item, pos.x, pos.y);
             OnItemAdded?.Invoke(item);
+            return true;
         }
+
+        return false;
+    }
+
+    public void DropItem(InventoryItem item) {
+
+        RemoveItem(item);
+
+        Vector2 playerPos = LevelManager.Instance.GetPlayerTransform();
+        LevelManager.Instance.SpawnItem(playerPos, item.data);
     }
 
     public void RemoveItem(InventoryItem item) {

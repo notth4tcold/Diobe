@@ -5413,6 +5413,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LevelManager
   playerPrefab: {fileID: 3703478193029192525, guid: 5e2774dcc1f03a748af46916b6823a12, type: 3}
   mapPrefab: {fileID: 2809535483467954637, guid: 9aa6c70a4a51c5547990ee4a8cdf715f, type: 3}
+  itemPickupPrefab: {fileID: 8765033410204424641, guid: 397d2b6d68bbc5b4d81d9275b179b9f8, type: 3}
+  sword: {fileID: 11400000, guid: 29e937e8c0ffd3441b23988a41e7ef87, type: 2}
 --- !u!4 &1130479304
 Transform:
   m_ObjectHideFlags: 0

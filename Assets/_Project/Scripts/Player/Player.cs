@@ -19,20 +19,20 @@ public class Player : MonoBehaviour {
     public event Action<float> OnHealthPercentChanged;
     public event Action<float> OnManaPercentChanged;
 
-    [SerializeField] private SpriteResolver torsoResolver;
+    [SerializeField] private SpriteResolver chestResolver;
     [SerializeField] private SpriteResolver headResolver;
-    [SerializeField] private SpriteResolver lArmResolver;
-    [SerializeField] private SpriteResolver rArmResolver;
-    [SerializeField] private SpriteResolver lLegResolver;
-    [SerializeField] private SpriteResolver rLegResolver;
+    [SerializeField] private SpriteResolver armLResolver;
+    [SerializeField] private SpriteResolver armRResolver;
+    [SerializeField] private SpriteResolver legLResolver;
+    [SerializeField] private SpriteResolver legRResolver;
 
     void Start() {
-        torsoResolver.SetCategoryAndLabel("Torso", "Iron");
-        headResolver.SetCategoryAndLabel("Head", "Iron");
-        lArmResolver.SetCategoryAndLabel("lArm", "Iron");
-        rArmResolver.SetCategoryAndLabel("rArm", "Iron");
-        lLegResolver.SetCategoryAndLabel("lLeg", "Iron");
-        rLegResolver.SetCategoryAndLabel("rLeg", "Iron");
+        chestResolver.SetCategoryAndLabel("Chest", "Default");
+        headResolver.SetCategoryAndLabel("Head", "Default");
+        armLResolver.SetCategoryAndLabel("Arm_L", "Default");
+        armRResolver.SetCategoryAndLabel("Arm_R", "Default");
+        legLResolver.SetCategoryAndLabel("Leg_L", "Default");
+        legRResolver.SetCategoryAndLabel("Leg_R", "Default");
     }
 
     void Update() {

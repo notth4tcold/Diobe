@@ -1,7 +1,9 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour {
+
+    [SerializeField] private PlayerInputHandler input;
+
     Rigidbody2D rb;
     Vector2 moveInput;
     private GroundCheck groundCheck;
@@ -11,6 +13,7 @@ public class PlayerMovement : MonoBehaviour {
     private float moveForce = 100.0f;
     private float maxVelocity = 10.0f;
     private float fakeFrictionValue = 0.95f;
+    private float groundDeceleration = 80f;
     private float startTimeBtwRunSound = 0.3f;
     private float timeBtwRunSound;
     private bool facingRight = true;
@@ -18,41 +21,54 @@ public class PlayerMovement : MonoBehaviour {
     [Header("Jump")]
     private float jumpForce = 5f;
     private float maxJumpTime = 0.2f;
-    [SerializeField]
     private bool isJumping;
-    public bool jumpHeld;
+    private bool jumpHeld;
     private float jumpTimeCounter;
     private bool wasGrounded;
+
+    //[SerializeField] private PlayerWeapon weapon;
 
     void Awake() {
         rb = GetComponent<Rigidbody2D>();
         groundCheck = GetComponent<GroundCheck>();
         anim = GetComponent<Animator>();
+
+        input.OnJumpPressed += TryStartJump;
+        input.OnJumpReleased += ReleaseJump;
+        input.OnAttackPressed += StartAttack;
+        input.OnAttackReleased += ReleaseAttack;
     }
 
     void FixedUpdate() {
+        moveInput = input.MoveInput;
+        jumpHeld = input.JumpHeld;
+
         HandleMove();
         HandleJump();
         CheckLand();
     }
 
     void HandleMove() {
-        rb.AddForce(Vector2.right * moveInput.x * moveForce * rb.mass, ForceMode2D.Force);
+        rb.AddForce(Vector2.right * moveInput.x * moveForce, ForceMode2D.Force);
         anim.SetBool("Run", moveInput.x != 0 && groundCheck.IsGrounded());
 
-        if (Mathf.Abs(rb.linearVelocity.x) > maxVelocity) rb.linearVelocity = new Vector2(maxVelocity * moveInput.x, rb.linearVelocity.y);
+        float clampedX = Mathf.Clamp(rb.linearVelocity.x, -maxVelocity, maxVelocity);
+        rb.linearVelocity = new Vector2(clampedX, rb.linearVelocity.y);
 
         FakeFriction();
         WalkSound();
         FlipSprite(moveInput.x);
     }
 
-    public void OnMove(InputAction.CallbackContext context) {
-        moveInput = context.ReadValue<Vector2>();
-    }
-
     private void FakeFriction() {
-        if (groundCheck.IsGrounded()) rb.linearVelocity = new Vector2(rb.linearVelocity.x * fakeFrictionValue, rb.linearVelocity.y);
+        if (!groundCheck.IsGrounded()) return;
+
+        if (moveInput.x == 0) {
+            float newX = Mathf.MoveTowards(rb.linearVelocity.x, 0, groundDeceleration * Time.fixedDeltaTime);
+            rb.linearVelocity = new Vector2(newX, rb.linearVelocity.y);
+        } else {
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x * fakeFrictionValue, rb.linearVelocity.y);
+        }
     }
 
     private void WalkSound() {
@@ -69,6 +85,7 @@ public class PlayerMovement : MonoBehaviour {
         if (side < 0 && facingRight || side > 0 && !facingRight) {
             facingRight = !facingRight;
             transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
+            //weapon.SetFacing(facingRight);
         }
     }
 
@@ -78,18 +95,11 @@ public class PlayerMovement : MonoBehaviour {
         if (!isJumping || !jumpHeld) return;
 
         if (jumpTimeCounter > 0) {
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce * rb.mass);
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
             jumpTimeCounter -= Time.fixedDeltaTime;
         } else {
             isJumping = false;
         }
-    }
-
-    public void OnJump(InputAction.CallbackContext context) {
-        if (context.started) TryStartJump();
-        if (context.canceled) ReleaseJump();
-
-        jumpHeld = context.ReadValueAsButton();
     }
 
     void TryStartJump() {
@@ -100,25 +110,21 @@ public class PlayerMovement : MonoBehaviour {
         isJumping = true;
         jumpTimeCounter = maxJumpTime;
 
-        rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce * rb.mass);
+        rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
     }
 
     public void ReleaseJump() {
         isJumping = false;
     }
 
-    public void OnAttack(InputAction.CallbackContext context) {
-        anim.SetFloat("AttackSpeed", 2);
-        if (context.started) StartAttack();
-        if (context.canceled) ReleaseAttack();
-    }
-
     void StartAttack() {
+        anim.SetFloat("AttackSpeed", 2f);
         anim.SetBool("Attack", true);
     }
 
     void ReleaseAttack() {
         anim.SetBool("Attack", false);
+        //weapon.ReleaseAttack();
     }
 
     void CheckLand() {
@@ -137,5 +143,12 @@ public class PlayerMovement : MonoBehaviour {
             AudioManager.Instance.PlaySFX(SFX.PlayerLand);
             CameraManager.Instance.Shake();
         }
+    }
+
+    void OnDestroy() {
+        input.OnJumpPressed -= TryStartJump;
+        input.OnJumpReleased -= ReleaseJump;
+        input.OnAttackPressed -= StartAttack;
+        input.OnAttackReleased -= ReleaseAttack;
     }
 }
