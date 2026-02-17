@@ -135,6 +135,13 @@ public class GameManager : MonoBehaviour {
     public bool SpawnItem(ItemData data) {
         InventoryItem item = new InventoryItem(data, 0, 0);
 
+        Player player = LevelManager.Instance.GetPlayer();
+
+        if (item.data.type == ItemType.Weapon && !player.HasWeapon) {
+            player.EquipWeapon(data);
+            return true;
+        }
+
         if (InventoryGrid.FindEmptyPlace(item, out Vector2Int pos)) {
             InventoryGrid.PlaceItem(item, pos.x, pos.y);
             OnItemAdded?.Invoke(item);

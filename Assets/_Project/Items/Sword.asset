@@ -15,5 +15,6 @@ MonoBehaviour:
   id: 6
   itemName: Sword
   icon: {fileID: 712035800519618848, guid: 6ad4e858aedd4434c93ce94e414bfb02, type: 3}
+  type: 1
   width: 1
   height: 2

@@ -350,6 +350,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
   input: {fileID: 4552326715933499673}
+  weapon: {fileID: 2100416822370130854}
 --- !u!114 &7483196144818418769
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -431,6 +432,7 @@ MonoBehaviour:
   armRResolver: {fileID: 7766522612998307716}
   legLResolver: {fileID: 5870547263215748636}
   legRResolver: {fileID: 3281912142567020161}
+  playerWeapon: {fileID: 2100416822370130854}
 --- !u!114 &2375586892457968088
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -458,6 +460,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Weapon
   handPosition: {fileID: 1248530821248669036}
   handRotation: {fileID: 137854351157087678}
+  itemEquipPrefab: {fileID: 8765033410204424641, guid: c6f08fdc930c68c478a85184aba4ab80, type: 3}
 --- !u!95 &2319253271265689516
 Animator:
   serializedVersion: 7

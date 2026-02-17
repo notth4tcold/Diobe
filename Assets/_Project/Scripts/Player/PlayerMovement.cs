@@ -26,7 +26,7 @@ public class PlayerMovement : MonoBehaviour {
     private float jumpTimeCounter;
     private bool wasGrounded;
 
-    //[SerializeField] private PlayerWeapon weapon;
+    [SerializeField] private PlayerWeapon weapon;
 
     void Awake() {
         rb = GetComponent<Rigidbody2D>();
@@ -85,7 +85,7 @@ public class PlayerMovement : MonoBehaviour {
         if (side < 0 && facingRight || side > 0 && !facingRight) {
             facingRight = !facingRight;
             transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
-            //weapon.SetFacing(facingRight);
+            weapon.SetFacing(facingRight);
         }
     }
 
@@ -124,7 +124,7 @@ public class PlayerMovement : MonoBehaviour {
 
     void ReleaseAttack() {
         anim.SetBool("Attack", false);
-        //weapon.ReleaseAttack();
+        weapon.ReleaseAttack();
     }
 
     void CheckLand() {

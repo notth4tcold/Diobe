@@ -26,6 +26,8 @@ public class Player : MonoBehaviour {
     [SerializeField] private SpriteResolver legLResolver;
     [SerializeField] private SpriteResolver legRResolver;
 
+    [SerializeField] private PlayerWeapon playerWeapon;
+
     void Start() {
         chestResolver.SetCategoryAndLabel("Chest", "Default");
         headResolver.SetCategoryAndLabel("Head", "Default");
@@ -136,6 +138,10 @@ public class Player : MonoBehaviour {
     public bool Hit => Random.value < combat.hitChance;
 
     //equipamento (opcional, mas comum)
+    public bool HasWeapon => playerWeapon.HasWeapon;
+    public void EquipWeapon(ItemData weapon) {
+        playerWeapon.Equip(weapon);
+    }
 }
 
 [System.Serializable]

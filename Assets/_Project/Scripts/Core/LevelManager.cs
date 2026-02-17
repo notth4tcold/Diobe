@@ -25,6 +25,16 @@ public class LevelManager : MonoBehaviour {
         SpawnMap(gameSave.hasMapPosition ? gameSave.mapPosition : defaultMapPos);
         SpawnPlayer(gameSave.hasPlayerPosition ? gameSave.playerPosition : defaultPlayerPos, gameSave);
         SpawnItem(Vector2.zero, sword);
+        SpawnItem(Vector2.zero, sword);
+        SpawnItem(Vector2.zero, sword);
+        SpawnItem(Vector2.zero, sword);
+        SpawnItem(Vector2.zero, sword);
+        SpawnItem(Vector2.zero, sword);
+        SpawnItem(Vector2.zero, sword);
+        SpawnItem(Vector2.zero, sword);
+        SpawnItem(Vector2.zero, sword);
+        SpawnItem(Vector2.zero, sword);
+        SpawnItem(Vector2.zero, sword);
     }
 
 
