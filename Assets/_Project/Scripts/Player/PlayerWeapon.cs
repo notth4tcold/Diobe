@@ -44,11 +44,16 @@ public class PlayerWeapon : MonoBehaviour {
     }
 
     public void Equip(ItemData weapon) {
+        Unequip();
         currentWeapon = Instantiate(itemEquipPrefab, handPosition.position, Quaternion.identity, gameObject.transform);
 
         WeaponHitbox hitbox = currentWeapon.GetComponent<WeaponHitbox>();
         hitbox.Initialize(weapon);
     }
 
-    public bool HasWeapon => currentWeapon != null;
+    public void Unequip() {
+        Destroy(currentWeapon);
+        currentWeapon = null;
+    }
+
 }

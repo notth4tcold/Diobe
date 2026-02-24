@@ -12,8 +12,8 @@ public class PlayerInputHandler : MonoBehaviour {
     public event Action OnAttackPressed;
     public event Action OnAttackReleased;
     public event Action OnInteractPressed;
-    public event Action OnPausePressed;
-    public event Action OnInventoryPressed;
+    public event Action OnPauseUIPressed;
+    public event Action OnCharacterUIPressed;
 
     public void OnMove(InputAction.CallbackContext context) => MoveInput = context.ReadValue<Vector2>();
 
@@ -33,11 +33,11 @@ public class PlayerInputHandler : MonoBehaviour {
         if (context.started) OnInteractPressed?.Invoke();
     }
 
-    public void OnPause(InputAction.CallbackContext context) {
-        if (context.started) OnPausePressed?.Invoke();
+    public void OnPauseUI(InputAction.CallbackContext context) {
+        if (context.started) OnPauseUIPressed?.Invoke();
     }
 
-    public void OnInventory(InputAction.CallbackContext context) {
-        if (context.started) OnInventoryPressed?.Invoke();
+    public void OnCharacterUI(InputAction.CallbackContext context) {
+        if (context.started) OnCharacterUIPressed?.Invoke();
     }
 }

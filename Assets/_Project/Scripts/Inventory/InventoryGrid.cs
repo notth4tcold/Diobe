@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,6 +8,8 @@ public class InventoryGrid : MonoBehaviour {
 
     private InventoryCell[,] grid;
     public List<InventoryItem> items = new();
+
+    public static event Action<InventoryItem> OnItemAdded;
 
     void Awake() {
         grid = new InventoryCell[width, height];
@@ -44,9 +47,27 @@ public class InventoryGrid : MonoBehaviour {
         return true;
     }
 
+    public bool SpawnNewItem(InventoryItem item) {
+        if (FindEmptyPlace(item, out Vector2Int pos)) {
+            item.x = pos.x;
+            item.y = pos.y;
+            return AddNewItem(item);
+        }
+
+        return false;
+    }
+
+    public bool AddNewItem(InventoryItem item) {
+        if (PlaceItem(item, item.x, item.y)) {
+            OnItemAdded?.Invoke(item);
+            return true;
+        }
+
+        return false;
+    }
+
     public bool PlaceItem(InventoryItem item, int startX, int startY) {
-        if (!CanPlaceItem(item, startX, startY))
-            return false;
+        if (!CanPlaceItem(item, startX, startY)) return false;
 
         item.x = startX;
         item.y = startY;

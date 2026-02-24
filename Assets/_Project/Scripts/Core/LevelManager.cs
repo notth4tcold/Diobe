@@ -14,39 +14,64 @@ public class LevelManager : MonoBehaviour {
     GameObject playerInstance;
     GameObject mapInstance;
 
+    private GameSaveData gameSave;
+    private Player player;
+
+#if UNITY_EDITOR
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    static void Init() {
+        EnsureManager<GameManager>();
+        EnsureManager<AudioManager>();
+        EnsureManager<ItemDatabase>();
+
+        GameManager.Instance.NewCharacter("teste", 1);
+    }
+
+    static void EnsureManager<T>() where T : Component {
+        if (FindFirstObjectByType<T>() != null) return;
+
+        var prefab = GetPrefabFromEditor<T>();
+        if (prefab != null) Instantiate(prefab);
+    }
+
+    static GameObject GetPrefabFromEditor<T>() where T : Component {
+        string[] guids = UnityEditor.AssetDatabase.FindAssets($"t:Prefab {typeof(T).Name}");
+        if (guids.Length == 0) return null;
+
+        string path = UnityEditor.AssetDatabase.GUIDToAssetPath(guids[0]);
+        return UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(path);
+    }
+#endif
+
     void Awake() {
         Instance = this;
 
         Vector2 defaultMapPos = new Vector2(0, -3.38f);
         Vector2 defaultPlayerPos = Vector2.zero;
 
-        var gameSave = GameManager.Instance.gameSaveData;
+        gameSave = GameManager.Instance.gameSaveData;
 
         SpawnMap(gameSave.hasMapPosition ? gameSave.mapPosition : defaultMapPos);
         SpawnPlayer(gameSave.hasPlayerPosition ? gameSave.playerPosition : defaultPlayerPos, gameSave);
         SpawnItem(Vector2.zero, sword);
         SpawnItem(Vector2.zero, sword);
-        SpawnItem(Vector2.zero, sword);
-        SpawnItem(Vector2.zero, sword);
-        SpawnItem(Vector2.zero, sword);
-        SpawnItem(Vector2.zero, sword);
-        SpawnItem(Vector2.zero, sword);
-        SpawnItem(Vector2.zero, sword);
-        SpawnItem(Vector2.zero, sword);
-        SpawnItem(Vector2.zero, sword);
-        SpawnItem(Vector2.zero, sword);
     }
-
 
     void Start() {
         CameraManager.Instance.SetTarget(GetPlayer().transform);
+
+        if (gameSave.isNewPlayer) {
+            GameManager.Instance.addInitialItems();
+            player.ResetHeathAndMana();
+            gameSave.isNewPlayer = false;
+        }
     }
 
 
     void SpawnPlayer(Vector2 position, GameSaveData gameSave) {
         playerInstance = Instantiate(playerPrefab, new Vector2(position.x, position.y), Quaternion.identity);
 
-        var player = playerInstance.GetComponent<Player>();
+        player = playerInstance.GetComponent<Player>();
         player.id = gameSave.characterSaveData.id;
         player.playerName = gameSave.characterSaveData.playerName;
         player.characterClass = gameSave.characterSaveData.characterClass;
@@ -58,11 +83,6 @@ public class LevelManager : MonoBehaviour {
         player.combat = gameSave.characterSaveData.combat;
 
         player.InitializeResourcesAndCombat();
-
-        if (gameSave.isNewPlayer) {
-            player.ResetHeathAndMana();
-            gameSave.isNewPlayer = false;
-        }
     }
 
     void SpawnMap(Vector2 position) {
@@ -81,7 +101,7 @@ public class LevelManager : MonoBehaviour {
 
     public Vector2 GetPlayerTransform() => playerInstance.transform.position;
 
-    public Player GetPlayer() => playerInstance.GetComponent<Player>();
+    public Player GetPlayer() => player;
 
     public Vector2 GetMapTransform() => mapInstance.transform.position;
 }

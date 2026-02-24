@@ -10,10 +10,14 @@ public class UIManager : MonoBehaviour {
     [SerializeField] private GameObject pauseUI;
     private bool isPaused;
 
-    [SerializeField] private GameObject inventoryUI;
-    private bool isInventoryOpen;
+    [SerializeField] private GameObject characterUI;
+    private bool isCharacterUIOpen;
 
     [SerializeField] private DialogueUI dialogueUI;
+
+    [SerializeField] private InventoryUI inventoryUI;
+
+    public Transform DragLayer;
 
     void Awake() {
         Instance = this;
@@ -25,8 +29,8 @@ public class UIManager : MonoBehaviour {
         isPaused = false;
         pauseUI.SetActive(isPaused);
 
-        isInventoryOpen = false;
-        inventoryUI.SetActive(isInventoryOpen);
+        isCharacterUIOpen = false;
+        characterUI.SetActive(isCharacterUIOpen);
 
         InitializeInput();
     }
@@ -38,22 +42,22 @@ public class UIManager : MonoBehaviour {
         inputHandler = player.GetComponent<PlayerInputHandler>();
         if (inputHandler == null) return;
 
-        inputHandler.OnPausePressed += HandlePause;
-        inputHandler.OnInventoryPressed += HandleInventory;
+        inputHandler.OnPauseUIPressed += HandlePauseUI;
+        inputHandler.OnCharacterUIPressed += HandleCharacterUI;
     }
 
-    void HandlePause() {
+    void HandlePauseUI() {
         if (dialogueUI.IsOpened()) return;
-        if (isInventoryOpen) CloseInventory();
+        if (isCharacterUIOpen) CloseCharacterUI();
         else if (isPaused) Resume();
         else Pause();
     }
 
-    void HandleInventory() {
+    void HandleCharacterUI() {
         if (dialogueUI.IsOpened()) return;
         if (isPaused) return;
-        if (isInventoryOpen) CloseInventory();
-        else OpenInventory();
+        if (isCharacterUIOpen) CloseCharacterUI();
+        else OpenCharacterUI();
     }
 
     void Resume() {
@@ -70,18 +74,18 @@ public class UIManager : MonoBehaviour {
         isPaused = true;
     }
 
-    void CloseInventory() {
+    void CloseCharacterUI() {
         AudioManager.Instance.PlaySFX(SFX.UICancel);
         Time.timeScale = 1f;
-        inventoryUI.SetActive(false);
-        isInventoryOpen = false;
+        characterUI.SetActive(false);
+        isCharacterUIOpen = false;
     }
 
-    void OpenInventory() {
-        AudioManager.Instance.PlaySFX(SFX.UIInventoryOpen);
+    void OpenCharacterUI() {
+        AudioManager.Instance.PlaySFX(SFX.UICharacterOpen);
         Time.timeScale = 0f;
-        inventoryUI.SetActive(true);
-        isInventoryOpen = true;
+        characterUI.SetActive(true);
+        isCharacterUIOpen = true;
     }
 
     public void OnPlayClicked() {
@@ -110,10 +114,12 @@ public class UIManager : MonoBehaviour {
         SceneManager.LoadScene("MainMenu");
     }
 
-    public bool IsUIBlocking => isPaused || isInventoryOpen;
+    public bool IsUIBlocking => isPaused || isCharacterUIOpen;
 
     void OnDestroy() {
-        inputHandler.OnPausePressed -= HandlePause;
-        inputHandler.OnInventoryPressed -= HandleInventory;
+        inputHandler.OnPauseUIPressed -= HandlePauseUI;
+        inputHandler.OnCharacterUIPressed -= HandleCharacterUI;
     }
+
+    public Vector2 DefaultInventoryCelltSize => inventoryUI.DefaultCellSize;
 }

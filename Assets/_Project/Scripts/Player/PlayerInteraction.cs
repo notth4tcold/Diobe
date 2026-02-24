@@ -1,9 +1,11 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class PlayerInteraction : MonoBehaviour {
     [SerializeField] private PlayerInputHandler input;
 
-    private ItemPickup currentItem;
+    private List<ItemPickup> itemsInRange = new();
 
     void Awake() {
         input.OnInteractPressed += HandleInteract;
@@ -12,10 +14,16 @@ public class PlayerInteraction : MonoBehaviour {
     private void HandleInteract() {
         if (UIManager.Instance.IsUIBlocking) return;
 
-        if (currentItem != null) {
-            currentItem.Interact();
-            currentItem = null;
-        }
+        if (itemsInRange.Count == 0) return;
+
+        ItemPickup closest = GetClosestItem();
+        closest.Interact();
+
+        itemsInRange.Remove(closest);
+    }
+
+    private ItemPickup GetClosestItem() {
+        return itemsInRange.OrderBy(item => Vector2.Distance(transform.position, item.transform.position)).FirstOrDefault();
     }
 
     void OnDestroy() {
@@ -24,15 +32,15 @@ public class PlayerInteraction : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D other) {
         ItemPickup item = other.GetComponentInParent<ItemPickup>();
-        if (item != null) {
-            currentItem = item;
+        if (item != null && !itemsInRange.Contains(item)) {
+            itemsInRange.Add(item);
         }
     }
 
     private void OnTriggerExit2D(Collider2D other) {
         ItemPickup item = other.GetComponentInParent<ItemPickup>();
-        if (item != null && item == currentItem) {
-            currentItem = null;
+        if (item != null) {
+            itemsInRange.Remove(item);
         }
     }
 }

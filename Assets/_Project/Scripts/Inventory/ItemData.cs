@@ -6,6 +6,7 @@ public class ItemData : ScriptableObject {
     public string itemName;
     public Sprite icon;
     public ItemType type;
+    public EquipmentType equipmentType;
 
     public int width = 1;
     public int height = 1;
@@ -14,5 +15,17 @@ public class ItemData : ScriptableObject {
 public enum ItemType {
     Consumable,
     Weapon,
-    Armor
+    Armor,
+    Quest
+}
+
+public enum EquipmentType {
+    None,
+    Head,
+    Necklace,
+    Ring,
+    MainHand,
+    OffHand,
+    Chest,
+    Feet
 }

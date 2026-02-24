@@ -179,38 +179,41 @@ MonoBehaviour:
   sfxSource: {fileID: 4602714925216583811}
   uiSource: {fileID: 1544690888080622687}
   musicSource: {fileID: 2897675963782501338}
-  menuMusic: {fileID: 0}
-  explorationMusic: {fileID: 0}
+  menuMusic: {fileID: 8300000, guid: ab2eb41bd68286449a7423d84969140e, type: 3}
+  explorationMusic: {fileID: 8300000, guid: 94544766e02bfb6448c1b8262e1c0a31, type: 3}
   combatMusic: {fileID: 0}
   playerHit: {fileID: 0}
   playerUseHealth: {fileID: 0}
   playerUseMana: {fileID: 0}
+  playerNoHealth: {fileID: 0}
+  playerNoMana: {fileID: 0}
   playerDie: {fileID: 0}
+  playerLevelUp: {fileID: 0}
+  playerCompleteQuest: {fileID: 0}
+  playerPickupGold: {fileID: 0}
+  playerJump: {fileID: 8300000, guid: 3b2b1b69ab6277147bd8d300e6065a82, type: 3}
+  playerLand: {fileID: 8300000, guid: b985bda3cafa6ef4a94f51fe51a928bc, type: 3}
+  playerRun: {fileID: 8300000, guid: ae7cab8cb7774fc4e90ee216167e0881, type: 3}
   slash: {fileID: 0}
   fireHit: {fileID: 0}
   iceHit: {fileID: 0}
   critHit: {fileID: 0}
   blockHit: {fileID: 0}
-  uiButton: {fileID: 0}
+  uiButton: {fileID: 8300000, guid: 9ddf66320c98de340b8965006ee83cd6, type: 3}
   uiConfirm: {fileID: 0}
-  uiCancel: {fileID: 0}
+  uiCancel: {fileID: 8300000, guid: 279647999528fe94581e2936f97f5b79, type: 3}
   uiPauseOpen: {fileID: 0}
   uiPauseClose: {fileID: 0}
-  uiInventoryOpen: {fileID: 0}
-  uiInventoryClose: {fileID: 0}
+  uiCharacterOpen: {fileID: 8300000, guid: 465186b58c8fefb4697c3b559d2c883c, type: 3}
+  uiCharacterClose: {fileID: 0}
   uiNewGame: {fileID: 0}
-  uiSaveGame: {fileID: 0}
-  uiNoHealth: {fileID: 0}
-  uiNoMana: {fileID: 0}
-  uiEquipItem: {fileID: 0}
-  uiUnequipItem: {fileID: 0}
-  uiLevelUp: {fileID: 0}
-  uiCompleteQuest: {fileID: 0}
-  uiPickupGold: {fileID: 0}
-  masterVolume: 1
-  musicVolume: 1
-  sfxVolume: 1
-  uiVolume: 1
+  uiSaveGame: {fileID: 8300000, guid: d658224eb4cf4804d886a62382756ec0, type: 3}
+  uiEquipItem: {fileID: 8300000, guid: 991d29779dcb95c44830e7275b3aed73, type: 3}
+  uiUnequipItem: {fileID: 8300000, guid: 87a032734e28dad46a0651ba4de54716, type: 3}
+  masterVolume: 0
+  musicVolume: 0
+  sfxVolume: 0
+  uiVolume: 0
 --- !u!1 &7427119349613266712
 GameObject:
   m_ObjectHideFlags: 0

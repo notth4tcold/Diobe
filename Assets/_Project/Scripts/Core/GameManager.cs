@@ -4,13 +4,10 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour {
     public static GameManager Instance { get; private set; }
+
     public InventoryGrid InventoryGrid { get; private set; }
 
-    [SerializeField]
-    private ItemData[] startingItems;
-
-    public static event Action<InventoryItem> OnItemAdded;
-    public static event Action<InventoryItem> OnItemRemoved;
+    [SerializeField] private ItemData[] startingItems;
 
     public GameSaveData gameSaveData;
 
@@ -35,8 +32,6 @@ public class GameManager : MonoBehaviour {
     }
 
     public void NewCharacter(string name, int classID) {
-        spawnInitialItems();
-
         var characterSaveData = new CharacterSaveData {
             id = System.Guid.NewGuid().ToString(),
             playerName = name,
@@ -113,10 +108,9 @@ public class GameManager : MonoBehaviour {
         gameSaveData.hasMapPosition = true;
     }
 
-    public void spawnInitialItems() {
+    public void addInitialItems() {
         InventoryGrid.ResetGrid();
-
-        foreach (var data in startingItems) SpawnItem(data);
+        foreach (var data in startingItems) PickupItem(data);
     }
 
     public void LoadItems(List<InventoryItemSaveData> items) {
@@ -124,44 +118,29 @@ public class GameManager : MonoBehaviour {
 
         foreach (var saveItem in items) {
             ItemData data = ItemDatabase.Instance.Get(saveItem.itemId);
-
             InventoryItem item = new InventoryItem(data, saveItem.x, saveItem.y);
-
-            InventoryGrid.PlaceItem(item, item.x, item.y);
-            OnItemAdded?.Invoke(item);
+            InventoryGrid.AddNewItem(item);
         }
     }
 
-    public bool SpawnItem(ItemData data) {
+    public bool PickupItem(ItemData data) {
         InventoryItem item = new InventoryItem(data, 0, 0);
 
         Player player = LevelManager.Instance.GetPlayer();
-
         if (item.data.type == ItemType.Weapon && !player.HasWeapon) {
-            player.EquipWeapon(data);
-            return true;
+            return player.EquipWeaponToInventory(item);
         }
 
-        if (InventoryGrid.FindEmptyPlace(item, out Vector2Int pos)) {
-            InventoryGrid.PlaceItem(item, pos.x, pos.y);
-            OnItemAdded?.Invoke(item);
-            return true;
-        }
+        return SpawnNewItem(item);
+    }
 
-        return false;
+    public bool SpawnNewItem(InventoryItem item) {
+        return InventoryGrid.SpawnNewItem(item);
     }
 
     public void DropItem(InventoryItem item) {
-
-        RemoveItem(item);
-
         Vector2 playerPos = LevelManager.Instance.GetPlayerTransform();
         LevelManager.Instance.SpawnItem(playerPos, item.data);
-    }
-
-    public void RemoveItem(InventoryItem item) {
-        InventoryGrid.RemoveItem(item);
-        OnItemRemoved?.Invoke(item);
     }
 
     public void ResetGameState() {

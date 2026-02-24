@@ -40,6 +40,8 @@ public class PlayerMovement : MonoBehaviour {
     }
 
     void FixedUpdate() {
+        if (UIManager.Instance.IsUIBlocking) return;
+
         moveInput = input.MoveInput;
         jumpHeld = input.JumpHeld;
 
@@ -118,6 +120,8 @@ public class PlayerMovement : MonoBehaviour {
     }
 
     void StartAttack() {
+        if (UIManager.Instance.IsUIBlocking) return;
+
         anim.SetFloat("AttackSpeed", 2f);
         anim.SetBool("Attack", true);
     }

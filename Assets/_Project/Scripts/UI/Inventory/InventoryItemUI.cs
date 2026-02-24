@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -6,65 +7,86 @@ public class InventoryItemUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     [SerializeField] private Image image;
 
     private InventoryItem item;
-    private InventoryUI inventoryUI;
+    private IItemContainerUI container;
+    private IItemContainerUI currentHoverContainer;
     private RectTransform rect;
 
-    public void Init(InventoryItem item, InventoryUI ui) {
+    public InventoryItem Item => item;
+    public RectTransform Rect => rect;
+
+    public void Init(InventoryItem item, IItemContainerUI container) {
         this.item = item;
-        inventoryUI = ui;
+        this.container = container;
+
         rect = GetComponent<RectTransform>();
 
         image.sprite = item.data.icon;
-
-        rect.sizeDelta = new Vector2(
-            item.Width * inventoryUI.CellSize,
-            item.Height * inventoryUI.CellSize
-        );
-
-        rect.anchoredPosition = inventoryUI.GridToScreen(item.x, item.y);
     }
 
     public void OnBeginDrag(PointerEventData eventData) {
-        AudioManager.Instance.PlaySFX(SFX.UIUnequipItem);
         image.raycastTarget = false;
+        transform.SetParent(UIManager.Instance.DragLayer);
         transform.SetAsLastSibling();
+        container.OnBeginDrag(this, eventData);
     }
 
     public void OnDrag(PointerEventData eventData) {
-        rect.position = eventData.position + new Vector2(-rect.sizeDelta.x * 0.5f, rect.sizeDelta.y * 0.5f);
+        container.OnDrag(this, eventData);
 
-        Vector2 gridPosCheck = new Vector2(rect.position.x, rect.position.y) + new Vector2(inventoryUI.CellSize * 0.5f, -inventoryUI.CellSize * 0.5f);
+        IItemContainerUI targetContainer = GetContainerUnderMouse(eventData);
 
-        Vector2Int gridPos = inventoryUI.ScreenToGrid(gridPosCheck);
-        if (gridPos.x >= 0 && gridPos.y >= 0) {
-            inventoryUI.PreviewPlacement(item, gridPos);
+        if (currentHoverContainer != targetContainer) {
+            currentHoverContainer?.ClearVisualState(this);
+            currentHoverContainer = targetContainer;
         }
+
+        currentHoverContainer?.ShowVisualState(this, eventData);
     }
 
     public void OnEndDrag(PointerEventData eventData) {
         image.raycastTarget = true;
 
-        Vector2 gridPosCheck = new Vector2(rect.position.x, rect.position.y) + new Vector2(inventoryUI.CellSize * 0.5f, -inventoryUI.CellSize * 0.5f);
+        IItemContainerUI targetContainer = GetContainerUnderMouse(eventData);
 
-        Vector2Int gridPos = inventoryUI.ScreenToGrid(gridPosCheck);
-        bool isInsideGrid = inventoryUI.IsInsideGrid(gridPos);
+        container.ClearVisualState(this);
 
-        if (isInsideGrid && inventoryUI.TryPlaceItem(item, this, gridPos)) {
-            AudioManager.Instance.PlaySFX(SFX.UIEquipItem);
-        } else if (!isInsideGrid) {
-            AudioManager.Instance.PlaySFX(SFX.UIUnequipItem);
-            GameManager.Instance.DropItem(item);
+        if (targetContainer == null) {
+            container.RemoveItem(this);
+            DropToWorld();
+            return;
         }
 
-        inventoryUI.ClearPreview();
+        targetContainer.ClearVisualState(this);
+
+        if (!targetContainer.CanReceiveItem(this, eventData)) {
+            container.CancelDrag(this, eventData);
+            return;
+        }
+
+        if (targetContainer == container) {
+            targetContainer.ReceiveItem(this, eventData);
+            return;
+        }
+
+        container.DetachItem(this);
+        targetContainer.ReceiveItem(this, eventData);
+        container = targetContainer;
     }
 
-    public void SnapToGrid(Vector2Int pos) {
-        RectTransform cell = inventoryUI.GetCellRect(pos);
-        if (cell == null) return;
+    private void DropToWorld() {
+        AudioManager.Instance.PlaySFX(SFX.UIUnequipItem);
+        GameManager.Instance.DropItem(item);
+    }
 
-        Vector2 topLeft = cell.anchoredPosition + new Vector2(-cell.rect.width * 0.5f, cell.rect.height * 0.5f);
+    private IItemContainerUI GetContainerUnderMouse(PointerEventData eventData) {
+        List<RaycastResult> results = new();
+        EventSystem.current.RaycastAll(eventData, results);
 
-        rect.anchoredPosition = topLeft;
+        foreach (var result in results) {
+            var link = result.gameObject.GetComponentInParent<ItemContainerLink>();
+            if (link != null && link.Container != null) return link.Container;
+        }
+
+        return null;
     }
 }

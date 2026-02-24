@@ -28,6 +28,12 @@ public class Player : MonoBehaviour {
 
     [SerializeField] private PlayerWeapon playerWeapon;
 
+    public EquipmentInventory EquipmentInventory { get; private set; }
+
+    void Awake() {
+        EquipmentInventory = GetComponent<EquipmentInventory>();
+    }
+
     void Start() {
         chestResolver.SetCategoryAndLabel("Chest", "Default");
         headResolver.SetCategoryAndLabel("Head", "Default");
@@ -137,10 +143,16 @@ public class Player : MonoBehaviour {
     public bool Crit => Random.value < combat.critChance;
     public bool Hit => Random.value < combat.hitChance;
 
-    //equipamento (opcional, mas comum)
-    public bool HasWeapon => playerWeapon.HasWeapon;
-    public void EquipWeapon(ItemData weapon) {
-        playerWeapon.Equip(weapon);
+    // Equipment
+    public bool HasWeapon => EquipmentInventory.HasWeapon;
+    public bool EquipWeaponToInventory(InventoryItem item) {
+        return EquipmentInventory.EquipNewItem(item);
+    }
+    public void EquipWeapon(InventoryItem item) {
+        playerWeapon.Equip(item.data);
+    }
+    public void UnequipWeapon() {
+        playerWeapon.Unequip();
     }
 }
 

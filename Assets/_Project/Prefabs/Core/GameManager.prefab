@@ -46,28 +46,65 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   startingItems:
-  - {fileID: 11400000, guid: 45a93e4fb5dca994b89ea3e1295abae6, type: 2}
-  - {fileID: 11400000, guid: dafa1f233dfa3bc49a33154618812978, type: 2}
-  - {fileID: 11400000, guid: c975ff698ebdb8249af4ca0b59b250d7, type: 2}
-  - {fileID: 11400000, guid: 47f39f3247e0c464980470325794d118, type: 2}
-  - {fileID: 11400000, guid: 8c50756ddc415f745b25479f2831037e, type: 2}
-  characterSaveData:
-    id: 
-    playerName: 
-    level: 0
-    exp: 0
-    characterClass: 0
-    inventoryGrid: {fileID: 0}
+  - {fileID: 11400000, guid: 29e937e8c0ffd3441b23988a41e7ef87, type: 2}
+  - {fileID: 11400000, guid: 29e937e8c0ffd3441b23988a41e7ef87, type: 2}
+  - {fileID: 11400000, guid: 29e937e8c0ffd3441b23988a41e7ef87, type: 2}
+  - {fileID: 11400000, guid: 29e937e8c0ffd3441b23988a41e7ef87, type: 2}
+  - {fileID: 11400000, guid: 29e937e8c0ffd3441b23988a41e7ef87, type: 2}
   gameSaveData:
     characterSaveData:
       id: 
       playerName: 
+      characterClass: 0
+      money: 0
       level: 0
       exp: 0
-      characterClass: 0
-      inventoryGrid: {fileID: 0}
+      stats:
+        strength: 0
+        dexterity: 0
+        intelligence: 0
+        vitality: 0
+        baseMoveSpeed: 5
+        bonusMoveSpeed: 0
+      resources:
+        health: 0
+        mana: 0
+        baseHealth: 50
+        baseMana: 30
+        vitalityMultiplier: 10
+        intelligenceMultiplier: 5
+        baseHealthRegenPercent: 0.01
+        baseManaRegenPercent: 0.1
+        vitalityRegenMultiplier: 0.0001
+        intelligenceRegenMultiplier: 0.0001
+        itemHealthRegenBonus: 0
+        itemManaRegenBonus: 0
+      combat:
+        armor: 0
+        dodgeChance: 0.01
+        blockChance: 0.3
+        fireRes: 0
+        iceRes: 0
+        lightningRes: 0
+        poisonRes: 0
+        magicRes: 0
+        attack: 10
+        attackSpeed: 0
+        hitChance: 0.7
+        critChance: 0.1
+        critMultiplier: 2
+        weaponAttack: 0
+        weaponFireAttack: 0
+        weaponIceAttack: 0
+        weaponLightningAttack: 0
+        weaponPoisonAttack: 0
+        strengthMultiplier: 1
+      items: []
     playerPosition: {x: 0, y: 0}
+    hasPlayerPosition: 0
     mapPosition: {x: 0, y: 0}
+    hasMapPosition: 0
+    isNewPlayer: 0
 --- !u!114 &741327061868316279
 MonoBehaviour:
   m_ObjectHideFlags: 0

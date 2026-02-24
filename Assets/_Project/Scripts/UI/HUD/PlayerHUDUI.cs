@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 
-public class PlayerStatsUI : MonoBehaviour {
+public class PlayerHUDUI : MonoBehaviour {
     [SerializeField] private Transform healthBar;
     [SerializeField] private Transform manaBar;
     [SerializeField] private TMP_Text nameText;

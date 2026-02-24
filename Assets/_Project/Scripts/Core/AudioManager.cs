@@ -38,8 +38,8 @@ public class AudioManager : MonoBehaviour {
     [SerializeField] AudioClip uiCancel;
     [SerializeField] AudioClip uiPauseOpen;
     [SerializeField] AudioClip uiPauseClose;
-    [SerializeField] AudioClip uiInventoryOpen;
-    [SerializeField] AudioClip uiInventoryClose;
+    [SerializeField] AudioClip uiCharacterOpen;
+    [SerializeField] AudioClip uiCharacterClose;
     [SerializeField] AudioClip uiNewGame;
     [SerializeField] AudioClip uiSaveGame;
     [SerializeField] AudioClip uiEquipItem;
@@ -97,8 +97,8 @@ public class AudioManager : MonoBehaviour {
             case SFX.UICancel: uiSource.PlayOneShot(uiCancel); break;
             case SFX.UIPauseOpen: uiSource.PlayOneShot(uiPauseOpen); break;
             case SFX.UIPauseClose: uiSource.PlayOneShot(uiPauseClose); break;
-            case SFX.UIInventoryOpen: uiSource.PlayOneShot(uiInventoryOpen); break;
-            case SFX.UIInventoryClose: uiSource.PlayOneShot(uiInventoryClose); break;
+            case SFX.UICharacterOpen: uiSource.PlayOneShot(uiCharacterOpen); break;
+            case SFX.UICharacterClose: uiSource.PlayOneShot(uiCharacterClose); break;
             case SFX.UINewGame: uiSource.PlayOneShot(uiNewGame); break;
             case SFX.UISaveGame: uiSource.PlayOneShot(uiSaveGame); break;
             case SFX.UIEquipItem: uiSource.PlayOneShot(uiEquipItem); break;
@@ -151,8 +151,8 @@ public enum SFX {
     UICancel,
     UIPauseOpen,
     UIPauseClose,
-    UIInventoryOpen,
-    UIInventoryClose,
+    UICharacterOpen,
+    UICharacterClose,
     UINewGame,
     UISaveGame,
     UIEquipItem,

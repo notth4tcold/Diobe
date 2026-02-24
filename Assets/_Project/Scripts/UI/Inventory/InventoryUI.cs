@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class InventoryUI : MonoBehaviour {
+public class InventoryUI : MonoBehaviour, IItemContainerUI {
     [Header("References")]
     [SerializeField] private Transform itemsParent;
     [SerializeField] private InventoryItemUI itemPrefab;
@@ -10,21 +11,20 @@ public class InventoryUI : MonoBehaviour {
     private Dictionary<InventoryItem, InventoryItemUI> itemToUI = new();
     private InventoryGrid inventoryGrid;
 
+    private Vector2 defaultCellSize;
+
     void Awake() {
         inventoryGrid = GameManager.Instance.InventoryGrid;
+        defaultCellSize = ((RectTransform)cells[0].transform).sizeDelta;
     }
 
     void Start() {
-        ConfigGridIndex();
-        BuildFromGrid();
-    }
-
-    void ConfigGridIndex() {
         int totalCells = inventoryGrid.Width * inventoryGrid.Height;
-
         for (int i = 0; i < totalCells; i++) {
             cells[i].SetIndex(i);
         }
+
+        BuildFromGrid();
     }
 
     public void BuildFromGrid() {
@@ -39,60 +39,19 @@ public class InventoryUI : MonoBehaviour {
         InventoryItemUI itemUI = Instantiate(itemPrefab, itemsParent);
         itemUI.Init(item, this);
         itemToUI[item] = itemUI;
+        SnapToGrid(itemUI, new Vector2Int(itemUI.Item.x, itemUI.Item.y));
     }
 
-    public Vector2Int ScreenToGrid(Vector2 screenPos) {
-        for (int y = 0; y < inventoryGrid.Height; y++) {
-            for (int x = 0; x < inventoryGrid.Width; x++) {
-                int index = y * inventoryGrid.Width + x;
-                RectTransform cell = (RectTransform)cells[index].transform;
+    public void SnapToGrid(InventoryItemUI itemUI, Vector2Int pos) {
+        RectTransform cellRect = GetCellRect(pos);
+        if (cellRect == null) return;
 
-                if (RectTransformUtility.RectangleContainsScreenPoint(cell, screenPos, null)) {
-                    return new Vector2Int(x, y);
-                }
-            }
-        }
-
-        return new Vector2Int(-1, -1);
-    }
-
-    public Vector2 GridToScreen(int x, int y) {
-        int index = y * inventoryGrid.Width + x;
-        if (index < 0 || index >= cells.Length) return Vector2.zero;
-
-        RectTransform cellRect = (RectTransform)cells[index].transform;
-
-        return cellRect.anchoredPosition + new Vector2(-CellSize * 0.5f, CellSize * 0.5f);
-    }
-
-    public RectTransform GetCellRect(Vector2Int pos) {
-        if (pos.x < 0 || pos.y < 0) return null;
-
-        if (pos.x >= inventoryGrid.Width || pos.y >= inventoryGrid.Height) return null;
-
-        int index = pos.y * inventoryGrid.Width + pos.x;
-
-        if (index < 0 || index >= cells.Length) return null;
-
-        return (RectTransform)cells[index].transform;
-    }
-
-    public bool TryPlaceItem(InventoryItem item, InventoryItemUI itemUI, Vector2Int gridPos) {
-        int oldX = item.x;
-        int oldY = item.y;
-
-        inventoryGrid.RemoveItem(item);
-
-        if (!inventoryGrid.CanPlaceItem(item, gridPos.x, gridPos.y)) {
-            inventoryGrid.PlaceItem(item, oldX, oldY);
-            itemUI.SnapToGrid(new Vector2Int(oldX, oldY));
-            return false;
-        }
-
-        inventoryGrid.PlaceItem(item, gridPos.x, gridPos.y);
-        itemUI.SnapToGrid(gridPos);
-
-        return true;
+        itemUI.Rect.SetParent(itemsParent);
+        itemUI.Rect.sizeDelta = new Vector2(
+            itemUI.Item.Width * defaultCellSize.x,
+            itemUI.Item.Height * defaultCellSize.y
+        );
+        itemUI.Rect.anchoredPosition = cellRect.anchoredPosition + new Vector2(-cellRect.sizeDelta.x * 0.5f, cellRect.sizeDelta.y * 0.5f);
     }
 
     public void PreviewPlacement(InventoryItem item, Vector2Int pos) {
@@ -116,37 +75,33 @@ public class InventoryUI : MonoBehaviour {
         }
     }
 
-    public void ClearPreview() {
-        foreach (var cell in cells)
-            cell.ClearHighlight();
-    }
+    private Vector2Int GetGridPosFromItem(InventoryItemUI itemUI) {
+        Vector2 screenPos = new Vector2(itemUI.Rect.position.x, itemUI.Rect.position.y) + new Vector2(defaultCellSize.x * 0.5f, -defaultCellSize.y * 0.5f);
 
-    public void ClearUI() {
-        foreach (Transform child in itemsParent)
-            Destroy(child.gameObject);
+        for (int y = 0; y < inventoryGrid.Height; y++) {
+            for (int x = 0; x < inventoryGrid.Width; x++) {
+                int index = y * inventoryGrid.Width + x;
+                RectTransform cell = (RectTransform)cells[index].transform;
 
-        itemToUI.Clear();
-    }
-
-    void OnEnable() {
-        GameManager.OnItemAdded += HandleItemAdded;
-        GameManager.OnItemRemoved += HandleItemRemoved;
-    }
-
-    void OnDisable() {
-        GameManager.OnItemAdded -= HandleItemAdded;
-        GameManager.OnItemRemoved -= HandleItemRemoved;
-    }
-
-    void HandleItemAdded(InventoryItem item) {
-        CreateInventoryItemUI(item);
-    }
-
-    void HandleItemRemoved(InventoryItem item) {
-        if (itemToUI.TryGetValue(item, out var ui)) {
-            Destroy(ui.gameObject);
-            itemToUI.Remove(item);
+                if (RectTransformUtility.RectangleContainsScreenPoint(cell, screenPos, null)) {
+                    return new Vector2Int(x, y);
+                }
+            }
         }
+
+        return new Vector2Int(-1, -1);
+    }
+
+    public RectTransform GetCellRect(Vector2Int pos) {
+        if (pos.x < 0 || pos.y < 0) return null;
+
+        if (pos.x >= inventoryGrid.Width || pos.y >= inventoryGrid.Height) return null;
+
+        int index = pos.y * inventoryGrid.Width + pos.x;
+
+        if (index < 0 || index >= cells.Length) return null;
+
+        return (RectTransform)cells[index].transform;
     }
 
     public bool IsInsideGrid(Vector2Int pos) {
@@ -156,5 +111,79 @@ public class InventoryUI : MonoBehaviour {
                pos.y < inventoryGrid.Height;
     }
 
-    public float CellSize => ((RectTransform)cells[0].transform).sizeDelta.x;
+    public void ClearUI() {
+        foreach (Transform child in itemsParent) Destroy(child.gameObject);
+        itemToUI.Clear();
+    }
+
+    public void ClearPreview() {
+        foreach (var cell in cells) cell.ClearHighlight();
+    }
+
+    public Vector2 DefaultCellSize => defaultCellSize;
+
+    public void OnBeginDrag(InventoryItemUI itemUI, PointerEventData eventData) {
+        AudioManager.Instance.PlaySFX(SFX.UIUnequipItem);
+    }
+
+    public void OnDrag(InventoryItemUI itemUI, PointerEventData eventData) {
+        itemUI.Rect.position = eventData.position + new Vector2(-itemUI.Rect.sizeDelta.x * 0.5f, itemUI.Rect.sizeDelta.y * 0.5f);
+    }
+
+    public bool CanReceiveItem(InventoryItemUI itemUI, PointerEventData eventData) {
+        Vector2Int gridPos = GetGridPosFromItem(itemUI);
+
+        if (!IsInsideGrid(gridPos)) return false;
+
+        return inventoryGrid.CanPlaceItem(itemUI.Item, gridPos.x, gridPos.y);
+    }
+
+    public void ReceiveItem(InventoryItemUI itemUI, PointerEventData eventData) {
+        Vector2Int gridPos = GetGridPosFromItem(itemUI);
+
+        inventoryGrid.RemoveItem(itemUI.Item);
+        inventoryGrid.PlaceItem(itemUI.Item, gridPos.x, gridPos.y);
+        SnapToGrid(itemUI, gridPos);
+
+        AudioManager.Instance.PlaySFX(SFX.UIEquipItem);
+    }
+
+    public void CancelDrag(InventoryItemUI itemUI, PointerEventData eventData) {
+        SnapToGrid(itemUI, new Vector2Int(itemUI.Item.x, itemUI.Item.y));
+    }
+
+    public void DetachItem(InventoryItemUI itemUI) {
+        inventoryGrid.RemoveItem(itemUI.Item);
+        itemToUI.Remove(itemUI.Item);
+    }
+
+    public void RemoveItem(InventoryItemUI itemUI) {
+        if (itemToUI.TryGetValue(itemUI.Item, out var ui)) {
+            DetachItem(itemUI);
+            Destroy(ui.gameObject);
+        }
+    }
+
+    public void ShowVisualState(InventoryItemUI itemUI, PointerEventData eventData) {
+        Vector2Int gridPos = GetGridPosFromItem(itemUI);
+        if (gridPos.x >= 0 && gridPos.y >= 0) {
+            PreviewPlacement(itemUI.Item, gridPos);
+        }
+    }
+
+    public void ClearVisualState(InventoryItemUI itemUI) {
+        ClearPreview();
+    }
+
+    void OnEnable() {
+        InventoryGrid.OnItemAdded += HandleItemAdded;
+    }
+
+    void OnDisable() {
+        InventoryGrid.OnItemAdded -= HandleItemAdded;
+    }
+
+    void HandleItemAdded(InventoryItem item) {
+        CreateInventoryItemUI(item);
+    }
 }

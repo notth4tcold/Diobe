@@ -50,7 +50,7 @@ public class ItemPickup : MonoBehaviour {
     }
 
     public void Interact() {
-        if (GameManager.Instance.SpawnItem(itemData)) {
+        if (GameManager.Instance.PickupItem(itemData)) {
             Destroy(gameObject);
         }
     }
