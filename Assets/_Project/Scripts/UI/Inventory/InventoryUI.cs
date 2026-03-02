@@ -10,15 +10,14 @@ public class InventoryUI : MonoBehaviour, IItemContainerUI {
 
     private Dictionary<InventoryItem, InventoryItemUI> itemToUI = new();
     private InventoryGrid inventoryGrid;
-
+    private bool isReceivingItem;
     private Vector2 defaultCellSize;
 
     void Awake() {
-        inventoryGrid = GameManager.Instance.InventoryGrid;
         defaultCellSize = ((RectTransform)cells[0].transform).sizeDelta;
     }
 
-    void Start() {
+    void Initialize() {
         int totalCells = inventoryGrid.Width * inventoryGrid.Height;
         for (int i = 0; i < totalCells; i++) {
             cells[i].SetIndex(i);
@@ -141,8 +140,12 @@ public class InventoryUI : MonoBehaviour, IItemContainerUI {
     public void ReceiveItem(InventoryItemUI itemUI, PointerEventData eventData) {
         Vector2Int gridPos = GetGridPosFromItem(itemUI);
 
+        isReceivingItem = true;
         inventoryGrid.RemoveItem(itemUI.Item);
         inventoryGrid.PlaceItem(itemUI.Item, gridPos.x, gridPos.y);
+        isReceivingItem = false;
+
+        itemToUI[itemUI.Item] = itemUI;
         SnapToGrid(itemUI, gridPos);
 
         AudioManager.Instance.PlaySFX(SFX.UIEquipItem);
@@ -177,13 +180,23 @@ public class InventoryUI : MonoBehaviour, IItemContainerUI {
 
     void OnEnable() {
         InventoryGrid.OnItemAdded += HandleItemAdded;
+        GameManager.Instance.SubscribeToPlayerReady(HandlePlayerReady);
     }
 
     void OnDisable() {
         InventoryGrid.OnItemAdded -= HandleItemAdded;
+        GameManager.Instance.UnsubscribeFromPlayerReady(HandlePlayerReady);
     }
 
     void HandleItemAdded(InventoryItem item) {
+        if (isReceivingItem) return;
+
         CreateInventoryItemUI(item);
+    }
+
+    private void HandlePlayerReady(Player p) {
+        if (inventoryGrid != null) return;
+        inventoryGrid = p.InventoryGrid;
+        Initialize();
     }
 }

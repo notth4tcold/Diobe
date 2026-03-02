@@ -11,10 +11,11 @@ public class PlayerHUDUI : MonoBehaviour {
     void Awake() {
         healthBar.localScale = new Vector3(0f, 1f, 1f);
         manaBar.localScale = new Vector3(0f, 1f, 1f);
-        player = LevelManager.Instance.GetPlayer();
     }
 
     void OnEnable() {
+        GameManager.Instance.SubscribeToPlayerReady(HandlePlayerReady);
+
         if (player == null) return;
         player.OnHealthPercentChanged += UpdateHealthDisplay;
         player.OnManaPercentChanged += UpdateManaDisplay;
@@ -25,6 +26,8 @@ public class PlayerHUDUI : MonoBehaviour {
     }
 
     void OnDisable() {
+        GameManager.Instance.UnsubscribeFromPlayerReady(HandlePlayerReady);
+
         if (player == null) return;
         player.OnHealthPercentChanged -= UpdateHealthDisplay;
         player.OnManaPercentChanged -= UpdateManaDisplay;
@@ -38,5 +41,9 @@ public class PlayerHUDUI : MonoBehaviour {
     private void UpdateManaDisplay(float percent) {
         percent = Mathf.Clamp01(percent);
         manaBar.localScale = new Vector3(percent, 1f, 1f);
+    }
+
+    private void HandlePlayerReady(Player p) {
+        player = p;
     }
 }

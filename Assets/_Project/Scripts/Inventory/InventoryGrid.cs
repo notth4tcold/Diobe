@@ -11,7 +11,7 @@ public class InventoryGrid : MonoBehaviour {
 
     public static event Action<InventoryItem> OnItemAdded;
 
-    void Awake() {
+    public void Initialize() {
         grid = new InventoryCell[width, height];
 
         for (int x = 0; x < width; x++)
@@ -39,30 +39,16 @@ public class InventoryGrid : MonoBehaviour {
 
         for (int x = 0; x < item.Width; x++) {
             for (int y = 0; y < item.Height; y++) {
-                if (grid[startX + x, startY + y].item == item) return true;
-                if (grid[startX + x, startY + y].occupied) return false;
+                var cell = grid[startX + x, startY + y];
+                if (cell.occupied && cell.item != item) return false;
             }
         }
 
         return true;
     }
 
-    public bool SpawnNewItem(InventoryItem item) {
-        if (FindEmptyPlace(item, out Vector2Int pos)) {
-            item.x = pos.x;
-            item.y = pos.y;
-            return AddNewItem(item);
-        }
-
-        return false;
-    }
-
-    public bool AddNewItem(InventoryItem item) {
-        if (PlaceItem(item, item.x, item.y)) {
-            OnItemAdded?.Invoke(item);
-            return true;
-        }
-
+    public bool SpawnItem(InventoryItem item) {
+        if (FindEmptyPlace(item, out Vector2Int pos)) return PlaceItem(item, pos.x, pos.y);
         return false;
     }
 
@@ -80,6 +66,7 @@ public class InventoryGrid : MonoBehaviour {
         }
 
         if (!items.Contains(item)) items.Add(item);
+        OnItemAdded?.Invoke(item);
 
         return true;
     }

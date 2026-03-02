@@ -14,6 +14,8 @@ public class InventoryItemUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     public InventoryItem Item => item;
     public RectTransform Rect => rect;
 
+    private Player player;
+
     public void Init(InventoryItem item, IItemContainerUI container) {
         this.item = item;
         this.container = container;
@@ -75,7 +77,7 @@ public class InventoryItemUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
     private void DropToWorld() {
         AudioManager.Instance.PlaySFX(SFX.UIUnequipItem);
-        GameManager.Instance.DropItem(item);
+        player.DropItem(item);
     }
 
     private IItemContainerUI GetContainerUnderMouse(PointerEventData eventData) {
@@ -88,5 +90,17 @@ public class InventoryItemUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         }
 
         return null;
+    }
+
+    void OnEnable() {
+        GameManager.Instance.SubscribeToPlayerReady(HandlePlayerReady);
+    }
+
+    void OnDisable() {
+        GameManager.Instance.UnsubscribeFromPlayerReady(HandlePlayerReady);
+    }
+
+    private void HandlePlayerReady(Player p) {
+        player = p;
     }
 }

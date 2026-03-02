@@ -31,17 +31,9 @@ public class UIManager : MonoBehaviour {
 
         isCharacterUIOpen = false;
         characterUI.SetActive(isCharacterUIOpen);
-
-        InitializeInput();
     }
 
     void InitializeInput() {
-        var player = LevelManager.Instance.GetPlayer();
-        if (player == null) return;
-
-        inputHandler = player.GetComponent<PlayerInputHandler>();
-        if (inputHandler == null) return;
-
         inputHandler.OnPauseUIPressed += HandlePauseUI;
         inputHandler.OnCharacterUIPressed += HandleCharacterUI;
     }
@@ -117,9 +109,24 @@ public class UIManager : MonoBehaviour {
     public bool IsUIBlocking => isPaused || isCharacterUIOpen;
 
     void OnDestroy() {
+        if (inputHandler == null) return;
         inputHandler.OnPauseUIPressed -= HandlePauseUI;
         inputHandler.OnCharacterUIPressed -= HandleCharacterUI;
     }
 
     public Vector2 DefaultInventoryCelltSize => inventoryUI.DefaultCellSize;
+
+    void OnEnable() {
+        GameManager.Instance.SubscribeToPlayerReady(HandlePlayerReady);
+    }
+
+    void OnDisable() {
+        GameManager.Instance.UnsubscribeFromPlayerReady(HandlePlayerReady);
+    }
+
+    private void HandlePlayerReady(Player p) {
+        if (inputHandler != null) return;
+        inputHandler = p.GetComponent<PlayerInputHandler>();
+        InitializeInput();
+    }
 }

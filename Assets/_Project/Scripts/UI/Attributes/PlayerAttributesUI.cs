@@ -19,10 +19,7 @@ public class PlayerAttributesUI : MonoBehaviour {
 
     private Player player;
 
-    void Start() {
-        player = LevelManager.Instance.GetPlayer();
-        if (player == null) return;
-
+    void Initialize() {
         // TODO Adicionar eventos para atualizar esses valores
 
         nameText.text = player.playerName;
@@ -38,5 +35,19 @@ public class PlayerAttributesUI : MonoBehaviour {
         manaText.text = player.resources.mana.ToString();
         attackText.text = player.combat.attack.ToString();
         armorText.text = player.combat.armor.ToString();
+    }
+
+    void OnEnable() {
+        GameManager.Instance.SubscribeToPlayerReady(HandlePlayerReady);
+    }
+
+    void OnDisable() {
+        GameManager.Instance.UnsubscribeFromPlayerReady(HandlePlayerReady);
+    }
+
+    private void HandlePlayerReady(Player p) {
+        if (player != null) return;
+        player = p;
+        Initialize();
     }
 }

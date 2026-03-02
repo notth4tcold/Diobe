@@ -8,14 +8,11 @@ public class LevelManager : MonoBehaviour {
     [SerializeField] GameObject mapPrefab;
     [SerializeField] GameObject itemPickupPrefab;
 
-    [Header("ItemData")]
+    // TODO remove test
     [SerializeField] private ItemData sword;
 
     GameObject playerInstance;
     GameObject mapInstance;
-
-    private GameSaveData gameSave;
-    private Player player;
 
 #if UNITY_EDITOR
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -24,7 +21,7 @@ public class LevelManager : MonoBehaviour {
         EnsureManager<AudioManager>();
         EnsureManager<ItemDatabase>();
 
-        GameManager.Instance.NewCharacter("teste", 1);
+        GameManager.Instance.LoadGameSaveDataForNewCharacter("teste", 1);
     }
 
     static void EnsureManager<T>() where T : Component {
@@ -49,40 +46,18 @@ public class LevelManager : MonoBehaviour {
         Vector2 defaultMapPos = new Vector2(0, -3.38f);
         Vector2 defaultPlayerPos = Vector2.zero;
 
-        gameSave = GameManager.Instance.gameSaveData;
+        var gameSave = GameManager.Instance.gameSaveData;
 
         SpawnMap(gameSave.hasMapPosition ? gameSave.mapPosition : defaultMapPos);
-        SpawnPlayer(gameSave.hasPlayerPosition ? gameSave.playerPosition : defaultPlayerPos, gameSave);
+        SpawnPlayer(gameSave.hasPlayerPosition ? gameSave.playerPosition : defaultPlayerPos);
+
+        // TODO remove test
         SpawnItem(Vector2.zero, sword);
         SpawnItem(Vector2.zero, sword);
     }
 
-    void Start() {
-        CameraManager.Instance.SetTarget(GetPlayer().transform);
-
-        if (gameSave.isNewPlayer) {
-            GameManager.Instance.addInitialItems();
-            player.ResetHeathAndMana();
-            gameSave.isNewPlayer = false;
-        }
-    }
-
-
-    void SpawnPlayer(Vector2 position, GameSaveData gameSave) {
+    void SpawnPlayer(Vector2 position) {
         playerInstance = Instantiate(playerPrefab, new Vector2(position.x, position.y), Quaternion.identity);
-
-        player = playerInstance.GetComponent<Player>();
-        player.id = gameSave.characterSaveData.id;
-        player.playerName = gameSave.characterSaveData.playerName;
-        player.characterClass = gameSave.characterSaveData.characterClass;
-        player.money = gameSave.characterSaveData.money;
-        player.level = gameSave.characterSaveData.level;
-        player.exp = gameSave.characterSaveData.exp;
-        player.stats = gameSave.characterSaveData.stats;
-        player.resources = gameSave.characterSaveData.resources;
-        player.combat = gameSave.characterSaveData.combat;
-
-        player.InitializeResourcesAndCombat();
     }
 
     void SpawnMap(Vector2 position) {
@@ -100,8 +75,5 @@ public class LevelManager : MonoBehaviour {
     }
 
     public Vector2 GetPlayerTransform() => playerInstance.transform.position;
-
-    public Player GetPlayer() => player;
-
     public Vector2 GetMapTransform() => mapInstance.transform.position;
 }

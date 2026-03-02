@@ -8,6 +8,7 @@ public class ItemPickup : MonoBehaviour {
     private float outlineThickness = 2f;
     private Material instanceMaterial;
     private bool playerNearby;
+    private Player player;
 
     void Awake() {
         instanceMaterial = spriteRenderer.material;
@@ -50,9 +51,21 @@ public class ItemPickup : MonoBehaviour {
     }
 
     public void Interact() {
-        if (GameManager.Instance.PickupItem(itemData)) {
+        if (player != null && player.PickupItem(itemData)) {
             Destroy(gameObject);
         }
+    }
+
+    void OnEnable() {
+        GameManager.Instance.SubscribeToPlayerReady(HandlePlayerReady);
+    }
+
+    void OnDisable() {
+        GameManager.Instance.UnsubscribeFromPlayerReady(HandlePlayerReady);
+    }
+
+    private void HandlePlayerReady(Player p) {
+        player = p;
     }
 
     public ItemData GetItemData() => itemData;

@@ -40,10 +40,7 @@ public class UIManagerLoadGame : MonoBehaviour {
 
             var gameSave = loadedGameSaves[loadDropdown.value - 1];
             GameManager.Instance.LoadGame(gameSave);
-
             Debug.Log("Game start with Player " + gameSave.characterSaveData.playerName + " as " + gameSave.characterSaveData.characterClass);
-
-            SceneManager.LoadScene("Home");
         } else {
             dialogueUI.Show("Please, select your save!");
         }

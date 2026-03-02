@@ -4720,6 +4720,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PanelDialog
       objectReference: {fileID: 0}
+    - target: {fileID: 2390407310670143161, guid: 1b4e64f1f5aad4146b6c96e87b0f1ce1, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2491976697496018215, guid: 1b4e64f1f5aad4146b6c96e87b0f1ce1, type: 3}
       propertyPath: background
       value: 

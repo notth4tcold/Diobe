@@ -66,10 +66,7 @@ public class UIManagerNewGame : MonoBehaviour {
             string name = nameInput.text;
             string classs = classDropdown.options[classDropdown.value].text;
             GameManager.Instance.NewCharacter(name, classDropdown.value);
-
             Debug.Log("New Player " + name + " as " + classs);
-
-            SceneManager.LoadScene("Home");
         } else {
             dialogueUI.Show("Please, type your player name!");
         }
@@ -80,10 +77,7 @@ public class UIManagerNewGame : MonoBehaviour {
         if (importDropdown.value > 0 && importDropdown.value <= loadedCharacters.Count) {
             var character = loadedCharacters[importDropdown.value - 1];
             GameManager.Instance.ImportCharacter(character);
-
             Debug.Log("Game start with Player " + character.playerName + " as " + character.characterClass);
-
-            SceneManager.LoadScene("Home");
         } else {
             dialogueUI.Show("Please, select your character!");
         }

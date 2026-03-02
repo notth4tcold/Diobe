@@ -48,6 +48,7 @@ GameObject:
   - component: {fileID: 7483196144818418769}
   - component: {fileID: 875115725829788560}
   - component: {fileID: 2375586892457968088}
+  - component: {fileID: 7425211244933489675}
   - component: {fileID: 4277870538110734495}
   - component: {fileID: 2100416822370130854}
   - component: {fileID: 2319253271265689516}
@@ -447,6 +448,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInteraction
   input: {fileID: 4552326715933499673}
+--- !u!114 &7425211244933489675
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3703478193029192525}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c11d541a9512ce849a1a7cc1c6723641, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InventoryGrid
+  items: []
 --- !u!114 &4277870538110734495
 MonoBehaviour:
   m_ObjectHideFlags: 0

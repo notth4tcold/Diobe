@@ -10,13 +10,11 @@ public class EquipmentUI : MonoBehaviour, IItemContainerUI {
 
     private Dictionary<InventoryItem, InventoryItemUI> itemToUI = new();
     private EquipmentInventory equipmentInventory;
-
+    private bool isReceivingItem;
     private Vector2 defaultInventoryCelltSize;
 
-    void Start() {
-        equipmentInventory = LevelManager.Instance.GetPlayer().EquipmentInventory;
+    void Initialize() {
         defaultInventoryCelltSize = UIManager.Instance.DefaultInventoryCelltSize;
-
         BuildFromEquipment();
     }
 
@@ -132,8 +130,11 @@ public class EquipmentUI : MonoBehaviour, IItemContainerUI {
         var slot = GetSlotUnderMouse(eventData);
         if (slot == null) return;
 
+        isReceivingItem = true;
         if (slot.SlotType == EquipmentType.Ring) equipmentInventory.EquipRingInSlot(itemUI.Item, slot.RingSlot);
         else equipmentInventory.EquipItem(itemUI.Item);
+        isReceivingItem = false;
+
         itemToUI[itemUI.Item] = itemUI;
         SnapToSlot(itemUI, slot);
 
@@ -174,20 +175,30 @@ public class EquipmentUI : MonoBehaviour, IItemContainerUI {
 
     void OnEnable() {
         EquipmentInventory.OnItemEquipped += HandleItemEquipped;
-        EquipmentInventory.OnItemUnequipped += HandleItemUnequipped;
+        EquipmentInventory.OnItemRemoved += HandleItemRemoved;
+        GameManager.Instance.SubscribeToPlayerReady(HandlePlayerReady);
     }
 
     void OnDisable() {
         EquipmentInventory.OnItemEquipped -= HandleItemEquipped;
-        EquipmentInventory.OnItemUnequipped -= HandleItemUnequipped;
+        EquipmentInventory.OnItemRemoved -= HandleItemRemoved;
+        GameManager.Instance.UnsubscribeFromPlayerReady(HandlePlayerReady);
     }
 
     void HandleItemEquipped(InventoryItem item) {
+        if (isReceivingItem) return;
+
         EquipmentSlotUI slot = GetSlotFromItem(item);
-        if (item != null) CreateInventoryItemUI(item, slot);
+        CreateInventoryItemUI(item, slot);
     }
 
-    void HandleItemUnequipped(InventoryItem item) {
+    void HandleItemRemoved(InventoryItem item) {
         RemoveItem(itemToUI[item]);
+    }
+
+    private void HandlePlayerReady(Player p) {
+        if (equipmentInventory != null) return;
+        equipmentInventory = p.EquipmentInventory;
+        Initialize();
     }
 }

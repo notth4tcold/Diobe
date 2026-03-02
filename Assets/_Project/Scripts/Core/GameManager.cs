@@ -1,15 +1,17 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
     public static GameManager Instance { get; private set; }
 
-    public InventoryGrid InventoryGrid { get; private set; }
-
     [SerializeField] private ItemData[] startingItems;
 
-    public GameSaveData gameSaveData;
+    public GameSaveData gameSaveData { get; private set; }
+
+    public Player player { get; private set; }
+    public event Action<Player> OnPlayerReady;
 
     void Awake() {
         if (Instance != null) {
@@ -19,8 +21,6 @@ public class GameManager : MonoBehaviour {
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
-
-        InventoryGrid = GetComponent<InventoryGrid>();
     }
 
     public List<CharacterSaveData> GetAllCharacters() {
@@ -32,6 +32,11 @@ public class GameManager : MonoBehaviour {
     }
 
     public void NewCharacter(string name, int classID) {
+        LoadGameSaveDataForNewCharacter(name, classID);
+        SceneManager.LoadScene("Home");
+    }
+
+    public void LoadGameSaveDataForNewCharacter(string name, int classID) {
         var characterSaveData = new CharacterSaveData {
             id = System.Guid.NewGuid().ToString(),
             playerName = name,
@@ -42,8 +47,7 @@ public class GameManager : MonoBehaviour {
             stats = GetDefaultStatsByClass((CharacterClass)classID),
             resources = new(),
             combat = new(),
-            lastSave = DateTime.Now,
-            items = InventoryGrid.BuildSaveData()
+            lastSave = DateTime.Now
         };
 
         gameSaveData = new GameSaveData {
@@ -57,8 +61,6 @@ public class GameManager : MonoBehaviour {
     }
 
     public void ImportCharacter(CharacterSaveData character) {
-        LoadItems(character.items);
-
         gameSaveData = new GameSaveData {
             characterSaveData = character,
             playerPosition = Vector2.zero,
@@ -66,12 +68,14 @@ public class GameManager : MonoBehaviour {
             mapPosition = Vector2.zero,
             hasMapPosition = false
         };
+
+        SceneManager.LoadScene("Home");
     }
 
     public void LoadGame(GameSaveData gameSave) {
-        LoadItems(gameSave.characterSaveData.items);
-
         gameSaveData = gameSave;
+
+        SceneManager.LoadScene("Home");
     }
 
     public void SaveCharacter() {
@@ -86,8 +90,6 @@ public class GameManager : MonoBehaviour {
     }
 
     public void FillCharacterSaveData() {
-        var player = LevelManager.Instance.GetPlayer();
-
         gameSaveData.characterSaveData.id = player.id;
         gameSaveData.characterSaveData.playerName = player.playerName;
         gameSaveData.characterSaveData.characterClass = player.characterClass;
@@ -98,7 +100,8 @@ public class GameManager : MonoBehaviour {
         gameSaveData.characterSaveData.resources = player.resources;
         gameSaveData.characterSaveData.combat = player.combat;
 
-        gameSaveData.characterSaveData.items = InventoryGrid.BuildSaveData();
+        gameSaveData.characterSaveData.items = player.BuildInventorySaveData();
+        gameSaveData.characterSaveData.equipments = player.BuildEquipmentSaveData();
     }
 
     public void FillGameSaveData() {
@@ -108,44 +111,36 @@ public class GameManager : MonoBehaviour {
         gameSaveData.hasMapPosition = true;
     }
 
-    public void addInitialItems() {
-        InventoryGrid.ResetGrid();
-        foreach (var data in startingItems) PickupItem(data);
+    public void AddInitialItems() {
+        foreach (var data in startingItems) player.PickupItem(data);
     }
 
     public void LoadItems(List<InventoryItemSaveData> items) {
-        InventoryGrid.ResetGrid();
+        player.ResetGrid();
 
         foreach (var saveItem in items) {
             ItemData data = ItemDatabase.Instance.Get(saveItem.itemId);
             InventoryItem item = new InventoryItem(data, saveItem.x, saveItem.y);
-            InventoryGrid.AddNewItem(item);
+            player.AddItem(item);
         }
     }
 
-    public bool PickupItem(ItemData data) {
-        InventoryItem item = new InventoryItem(data, 0, 0);
+    public void LoadEquipments(List<EquipmentItemSaveData> equipments) {
+        player.ResetSlots();
 
-        Player player = LevelManager.Instance.GetPlayer();
-        if (item.data.type == ItemType.Weapon && !player.HasWeapon) {
-            return player.EquipWeaponToInventory(item);
+        foreach (var saveItem in equipments) {
+            ItemData data = ItemDatabase.Instance.Get(saveItem.itemId);
+            InventoryItem item = new InventoryItem(data, 0, 0);
+
+            if (item.data.equipmentType == EquipmentType.Ring) player.EquipRingInSlot(item, saveItem.slot);
+            else player.EquipItemToInventory(item);
         }
-
-        return SpawnNewItem(item);
-    }
-
-    public bool SpawnNewItem(InventoryItem item) {
-        return InventoryGrid.SpawnNewItem(item);
-    }
-
-    public void DropItem(InventoryItem item) {
-        Vector2 playerPos = LevelManager.Instance.GetPlayerTransform();
-        LevelManager.Instance.SpawnItem(playerPos, item.data);
     }
 
     public void ResetGameState() {
         gameSaveData = null;
-        InventoryGrid.ResetGrid();
+        player.ResetGrid();
+        player.ResetSlots();
     }
 
     public PlayerStats GetDefaultStatsByClass(CharacterClass charClass) {
@@ -184,4 +179,28 @@ public class GameManager : MonoBehaviour {
         return stats;
     }
 
+    public void RegisterPlayer(Player player) {
+        this.player = player;
+        player.Initialize(gameSaveData);
+        OnPlayerReady?.Invoke(player);
+
+        if (gameSaveData.isNewPlayer) {
+            player.ResetHeathAndMana();
+            AddInitialItems();
+            gameSaveData.isNewPlayer = false;
+            return;
+        }
+
+        LoadItems(gameSaveData.characterSaveData.items);
+        LoadEquipments(gameSaveData.characterSaveData.equipments);
+    }
+
+    public void SubscribeToPlayerReady(Action<Player> callback) {
+        OnPlayerReady += callback;
+        if (player != null) callback(player);
+    }
+
+    public void UnsubscribeFromPlayerReady(Action<Player> callback) {
+        OnPlayerReady -= callback;
+    }
 }

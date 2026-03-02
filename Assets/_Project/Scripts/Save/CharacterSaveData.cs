@@ -19,6 +19,7 @@ public class CharacterSaveData {
     public DateTime lastSave;
 
     public List<InventoryItemSaveData> items = new();
+    public List<EquipmentItemSaveData> equipments = new();
 }
 
 [Serializable]
@@ -26,4 +27,10 @@ public class InventoryItemSaveData {
     public string itemId;
     public int x;
     public int y;
+}
+
+[Serializable]
+public class EquipmentItemSaveData {
+    public string itemId;
+    public RingSlot slot;
 }
