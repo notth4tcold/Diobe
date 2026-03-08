@@ -52,8 +52,13 @@ public class LevelManager : MonoBehaviour {
         SpawnPlayer(gameSave.hasPlayerPosition ? gameSave.playerPosition : defaultPlayerPos);
 
         // TODO remove test
-        SpawnItem(Vector2.zero, sword);
-        SpawnItem(Vector2.zero, sword);
+        InventoryItem item = new InventoryItem(sword, 0, 0);
+        item.GenerateModifiers(1);
+        SpawnItem(Vector2.zero, item);
+
+        InventoryItem item2 = new InventoryItem(sword, 0, 0);
+        item2.GenerateModifiers(1);
+        SpawnItem(Vector2.zero, item2);
     }
 
     void SpawnPlayer(Vector2 position) {
@@ -64,9 +69,8 @@ public class LevelManager : MonoBehaviour {
         mapInstance = Instantiate(mapPrefab, new Vector2(position.x, position.y), Quaternion.identity);
     }
 
-    public void SpawnItem(Vector2 position, ItemData item) {
+    public void SpawnItem(Vector2 position, InventoryItem item) {
         GameObject itemInstance = Instantiate(itemPickupPrefab, position, Quaternion.identity);
-
         ItemPickup pickup = itemInstance.GetComponent<ItemPickup>();
         pickup.Initialize(item);
 

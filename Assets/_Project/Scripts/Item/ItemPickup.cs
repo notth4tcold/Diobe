@@ -1,28 +1,26 @@
 using UnityEngine;
 
 public class ItemPickup : MonoBehaviour {
-    [SerializeField] private ItemData itemData;
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private PolygonCollider2D polygonCollider;
 
+    private InventoryItem item;
     private float outlineThickness = 2f;
     private Material instanceMaterial;
-    private bool playerNearby;
     private Player player;
 
     void Awake() {
         instanceMaterial = spriteRenderer.material;
         instanceMaterial.SetColor("_Color", Color.white);
         SetOutline(0f);
-
-        Initialize(itemData);
     }
 
-    public void Initialize(ItemData data) {
-        if (data == null) return;
+    public void Initialize(InventoryItem inventoryItem) {
+        item = inventoryItem;
 
-        itemData = data;
-        spriteRenderer.sprite = data.icon;
+        if (item?.data == null) return;
+
+        spriteRenderer.sprite = item.data.icon;
 
         AdjustCollider();
     }
@@ -36,22 +34,12 @@ public class ItemPickup : MonoBehaviour {
         instanceMaterial.SetFloat("_Thickness", value);
     }
 
-    private void OnTriggerEnter2D(Collider2D other) {
-        if (other.CompareTag("Player")) {
-            playerNearby = true;
-            SetOutline(outlineThickness);
-        }
-    }
-
-    private void OnTriggerExit2D(Collider2D other) {
-        if (other.CompareTag("Player")) {
-            playerNearby = false;
-            SetOutline(0f);
-        }
+    public void SetHighlight(bool value) {
+        SetOutline(value ? outlineThickness : 0f);
     }
 
     public void Interact() {
-        if (player != null && player.PickupItem(itemData)) {
+        if (player != null && player.PickupItem(item)) {
             Destroy(gameObject);
         }
     }
@@ -68,6 +56,5 @@ public class ItemPickup : MonoBehaviour {
         player = p;
     }
 
-    public ItemData GetItemData() => itemData;
-    public bool IsNearby() => playerNearby;
+    public InventoryItem GetItemData() => item;
 }

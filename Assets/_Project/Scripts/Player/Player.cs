@@ -30,10 +30,10 @@ public class Player : MonoBehaviour {
     [SerializeField] private PlayerWeapon playerWeapon;
 
     public InventoryGrid InventoryGrid { get; private set; }
-    public EquipmentInventory EquipmentInventory { get; private set; }
+    public EquipmentSlots EquipmentInventory { get; private set; }
 
     void Awake() {
-        EquipmentInventory = GetComponent<EquipmentInventory>();
+        EquipmentInventory = GetComponent<EquipmentSlots>();
         InventoryGrid = GetComponent<InventoryGrid>();
         EquipmentInventory.Initialize();
         InventoryGrid.Initialize();
@@ -171,17 +171,19 @@ public class Player : MonoBehaviour {
     public void AddItem(InventoryItem item) => InventoryGrid.PlaceItem(item, item.x, item.y);
     public bool SpawnItem(InventoryItem item) => InventoryGrid.SpawnItem(item);
 
-    public bool PickupItem(ItemData data) {
-        InventoryItem item = new InventoryItem(data, 0, 0);
-
+    public bool PickupItem(InventoryItem item) {
         if (item.data.type == ItemType.Weapon && !HasWeapon) {
             return EquipItemToInventory(item);
         }
 
+        // foreach (var mod in item.modifiers) { TODO VER ONDE ADICIONAR OS STATS AO PLAYER
+        //     stats.Add(mod.stat, mod.value);
+        // }
+
         return SpawnItem(item);
     }
 
-    public void DropItem(InventoryItem item) => LevelManager.Instance.SpawnItem(transform.position, item.data);
+    public void DropItem(InventoryItem item) => LevelManager.Instance.SpawnItem(transform.position, item);
 
     // Equipment
     public bool HasWeapon => EquipmentInventory.HasWeapon;
@@ -195,12 +197,12 @@ public class Player : MonoBehaviour {
     public void ResetSlots() => EquipmentInventory.ResetSlots();
 
     void AddOnItemEquippedEvent() {
-        EquipmentInventory.OnItemEquipped += HandleItemEquipped;
-        EquipmentInventory.OnItemUnequipped += HandleItemUnequipped;
+        EquipmentSlots.OnItemEquipped += HandleItemEquipped;
+        EquipmentSlots.OnItemUnequipped += HandleItemUnequipped;
     }
     void OnDestroy() {
-        EquipmentInventory.OnItemEquipped -= HandleItemEquipped;
-        EquipmentInventory.OnItemUnequipped -= HandleItemUnequipped;
+        EquipmentSlots.OnItemEquipped -= HandleItemEquipped;
+        EquipmentSlots.OnItemUnequipped -= HandleItemUnequipped;
     }
 
     void HandleItemEquipped(InventoryItem item) {
@@ -211,7 +213,7 @@ public class Player : MonoBehaviour {
     }
 }
 
-[System.Serializable]
+[Serializable]
 public enum CharacterClass {
     Warrior,
     Archer,

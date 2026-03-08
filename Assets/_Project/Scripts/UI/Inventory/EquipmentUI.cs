@@ -9,7 +9,7 @@ public class EquipmentUI : MonoBehaviour, IItemContainerUI {
     [SerializeField] private EquipmentSlotUI[] slots;
 
     private Dictionary<InventoryItem, InventoryItemUI> itemToUI = new();
-    private EquipmentInventory equipmentInventory;
+    private EquipmentSlots equipmentInventory;
     private bool isReceivingItem;
     private Vector2 defaultInventoryCelltSize;
 
@@ -174,14 +174,14 @@ public class EquipmentUI : MonoBehaviour, IItemContainerUI {
     }
 
     void OnEnable() {
-        EquipmentInventory.OnItemEquipped += HandleItemEquipped;
-        EquipmentInventory.OnItemRemoved += HandleItemRemoved;
+        EquipmentSlots.OnItemEquipped += HandleItemEquipped;
+        EquipmentSlots.OnItemRemoved += HandleItemRemoved;
         GameManager.Instance.SubscribeToPlayerReady(HandlePlayerReady);
     }
 
     void OnDisable() {
-        EquipmentInventory.OnItemEquipped -= HandleItemEquipped;
-        EquipmentInventory.OnItemRemoved -= HandleItemRemoved;
+        EquipmentSlots.OnItemEquipped -= HandleItemEquipped;
+        EquipmentSlots.OnItemRemoved -= HandleItemRemoved;
         GameManager.Instance.UnsubscribeFromPlayerReady(HandlePlayerReady);
     }
 

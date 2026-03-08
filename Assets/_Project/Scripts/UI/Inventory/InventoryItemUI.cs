@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class InventoryItemUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler {
+public class InventoryItemUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler {
     [SerializeField] private Image image;
 
     private InventoryItem item;
@@ -26,9 +26,13 @@ public class InventoryItemUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     }
 
     public void OnBeginDrag(PointerEventData eventData) {
+        ItemTooltipUI.Instance.Blocked = true;
+        ItemTooltipUI.Instance.Hide();
+
         image.raycastTarget = false;
         transform.SetParent(UIManager.Instance.DragLayer);
         transform.SetAsLastSibling();
+
         container.OnBeginDrag(this, eventData);
     }
 
@@ -46,6 +50,7 @@ public class InventoryItemUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     }
 
     public void OnEndDrag(PointerEventData eventData) {
+        ItemTooltipUI.Instance.Blocked = false;
         image.raycastTarget = true;
 
         IItemContainerUI targetContainer = GetContainerUnderMouse(eventData);
@@ -92,12 +97,22 @@ public class InventoryItemUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         return null;
     }
 
+    public void OnPointerEnter(PointerEventData eventData) {
+        ItemTooltipUI.Instance.ShowUI(item.GetTooltip());
+    }
+
+    public void OnPointerExit(PointerEventData eventData) {
+        ItemTooltipUI.Instance.Hide();
+    }
+
     void OnEnable() {
         GameManager.Instance.SubscribeToPlayerReady(HandlePlayerReady);
+        ItemTooltipUI.Instance.Hide();
     }
 
     void OnDisable() {
         GameManager.Instance.UnsubscribeFromPlayerReady(HandlePlayerReady);
+        ItemTooltipUI.Instance.Hide();
     }
 
     private void HandlePlayerReady(Player p) {

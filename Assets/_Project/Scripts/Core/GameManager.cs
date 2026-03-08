@@ -112,7 +112,11 @@ public class GameManager : MonoBehaviour {
     }
 
     public void AddInitialItems() {
-        foreach (var data in startingItems) player.PickupItem(data);
+        foreach (var data in startingItems) {
+            InventoryItem item = new InventoryItem(data, 0, 0);
+            item.GenerateModifiers(1);
+            player.PickupItem(item);
+        }
     }
 
     public void LoadItems(List<InventoryItemSaveData> items) {
@@ -120,7 +124,10 @@ public class GameManager : MonoBehaviour {
 
         foreach (var saveItem in items) {
             ItemData data = ItemDatabase.Instance.Get(saveItem.itemId);
-            InventoryItem item = new InventoryItem(data, saveItem.x, saveItem.y);
+            InventoryItem item = new InventoryItem(data, saveItem.x, saveItem.y) {
+                itemLevel = saveItem.itemLevel,
+                modifiers = saveItem.modifiers
+            };
             player.AddItem(item);
         }
     }
@@ -130,7 +137,10 @@ public class GameManager : MonoBehaviour {
 
         foreach (var saveItem in equipments) {
             ItemData data = ItemDatabase.Instance.Get(saveItem.itemId);
-            InventoryItem item = new InventoryItem(data, 0, 0);
+            InventoryItem item = new InventoryItem(data, 0, 0) {
+                itemLevel = saveItem.itemLevel,
+                modifiers = saveItem.modifiers
+            };
 
             if (item.data.equipmentType == EquipmentType.Ring) player.EquipRingInSlot(item, saveItem.slot);
             else player.EquipItemToInventory(item);

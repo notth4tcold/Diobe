@@ -7,10 +7,6 @@ public class WeaponHitbox : MonoBehaviour {
 
     private bool canHit = false;
 
-    void Awake() {
-        Initialize(itemData);
-    }
-
     public void Initialize(ItemData data) {
         if (data == null) return;
 

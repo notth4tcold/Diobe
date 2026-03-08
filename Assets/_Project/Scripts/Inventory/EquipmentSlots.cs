@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EquipmentInventory : MonoBehaviour {
+public class EquipmentSlots : MonoBehaviour {
     private Dictionary<EquipmentType, InventoryItem> slots = new();
     private InventoryItem ring1;
     private InventoryItem ring2;
@@ -134,21 +134,27 @@ public class EquipmentInventory : MonoBehaviour {
 
             itemsData.Add(new EquipmentItemSaveData {
                 itemId = slots[type].data.id,
-                slot = RingSlot.None
+                slot = RingSlot.None,
+                itemLevel = slots[type].itemLevel,
+                modifiers = slots[type].modifiers
             });
         }
 
         if (ring1 != null) {
             itemsData.Add(new EquipmentItemSaveData {
                 itemId = ring1.data.id,
-                slot = RingSlot.Ring1
+                slot = RingSlot.Ring1,
+                itemLevel = ring1.itemLevel,
+                modifiers = ring1.modifiers
             });
         }
 
         if (ring2 != null) {
             itemsData.Add(new EquipmentItemSaveData {
-                itemId = ring1.data.id,
-                slot = RingSlot.Ring2
+                itemId = ring2.data.id,
+                slot = RingSlot.Ring2,
+                itemLevel = ring2.itemLevel,
+                modifiers = ring2.modifiers
             });
         }
 

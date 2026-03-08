@@ -100,7 +100,9 @@ public class InventoryGrid : MonoBehaviour {
             itemsData.Add(new InventoryItemSaveData {
                 itemId = item.data.id,
                 x = item.x,
-                y = item.y
+                y = item.y,
+                itemLevel = item.itemLevel,
+                modifiers = item.modifiers
             });
         }
 
