@@ -107,12 +107,12 @@ public class InventoryItemUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
     void OnEnable() {
         GameManager.Instance.SubscribeToPlayerReady(HandlePlayerReady);
-        ItemTooltipUI.Instance.Hide();
+        if (ItemTooltipUI.Instance) ItemTooltipUI.Instance.Hide();
     }
 
     void OnDisable() {
         GameManager.Instance.UnsubscribeFromPlayerReady(HandlePlayerReady);
-        ItemTooltipUI.Instance.Hide();
+        if (ItemTooltipUI.Instance) ItemTooltipUI.Instance.Hide();
     }
 
     private void HandlePlayerReady(Player p) {

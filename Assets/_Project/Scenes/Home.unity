@@ -12230,7 +12230,7 @@ MonoBehaviour:
   root: {fileID: 1895002529}
   text: {fileID: 118222155}
   canvasGroup: {fileID: 1895002532}
-  canvasRect: {fileID: 992152776}
+  backgroundRect: {fileID: 292944687}
 --- !u!225 &1895002532
 CanvasGroup:
   m_ObjectHideFlags: 0
