@@ -12,9 +12,9 @@ public class CharacterSaveData {
     public int level;
     public int exp;
 
-    public PlayerStats stats = new();
-    public PlayerResources resources = new();
-    public PlayerCombat combat = new();
+    public List<StatValue> baseStats = new();
+    public int health;
+    public int mana;
 
     public DateTime lastSave;
 
@@ -37,4 +37,10 @@ public class EquipmentItemSaveData {
     public RingSlot slot;
     public int itemLevel;
     public List<ItemModifier> modifiers = new();
+}
+
+[Serializable]
+public struct StatValue {
+    public StatType stat;
+    public float value;
 }

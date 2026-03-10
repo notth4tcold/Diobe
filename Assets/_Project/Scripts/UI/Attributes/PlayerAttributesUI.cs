@@ -7,7 +7,7 @@ public class PlayerAttributesUI : MonoBehaviour {
 
     [SerializeField] private TMP_Text levelText;
 
-    [SerializeField] private TMP_Text strenghtText;
+    [SerializeField] private TMP_Text strengthText;
     [SerializeField] private TMP_Text dexterityText;
     [SerializeField] private TMP_Text vitalityText;
     [SerializeField] private TMP_Text intelligenceText;
@@ -20,29 +20,36 @@ public class PlayerAttributesUI : MonoBehaviour {
     private Player player;
 
     void Initialize() {
-        // TODO Adicionar eventos para atualizar esses valores
+        UpdateUI();
+
+        player.stats.OnStatsChanged += UpdateUI;
+    }
+
+    void UpdateUI() {
+        if (player == null) return;
 
         nameText.text = player.playerName;
-
         levelText.text = player.level.ToString();
 
-        strenghtText.text = player.stats.strength.ToString();
-        dexterityText.text = player.stats.dexterity.ToString();
-        vitalityText.text = player.stats.vitality.ToString();
-        intelligenceText.text = player.stats.intelligence.ToString();
+        strengthText.text = player.stats.Get(StatType.Strength).ToString();
+        dexterityText.text = player.stats.Get(StatType.Dexterity).ToString();
+        vitalityText.text = player.stats.Get(StatType.Vitality).ToString();
+        intelligenceText.text = player.stats.Get(StatType.Intelligence).ToString();
 
-        healthText.text = player.resources.health.ToString();
-        manaText.text = player.resources.mana.ToString();
-        attackText.text = player.combat.attack.ToString();
-        armorText.text = player.combat.armor.ToString();
+        healthText.text = player.resources.MaxHealth.ToString();
+        manaText.text = player.resources.MaxMana.ToString();
+        attackText.text = player.combat.Damage.ToString();
+        armorText.text = player.combat.Armor.ToString();
     }
 
     void OnEnable() {
         GameManager.Instance.SubscribeToPlayerReady(HandlePlayerReady);
+        if (player != null) Initialize();
     }
 
     void OnDisable() {
         GameManager.Instance.UnsubscribeFromPlayerReady(HandlePlayerReady);
+        if (player != null) player.stats.OnStatsChanged -= UpdateUI;
     }
 
     private void HandlePlayerReady(Player p) {

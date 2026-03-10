@@ -4,6 +4,7 @@ public class PlayerWeapon : MonoBehaviour {
     [SerializeField] private Transform handPosition;
     [SerializeField] private Transform handRotation;
     [SerializeField] GameObject itemEquipPrefab;
+    [SerializeField] private PlayerMovement movement;
 
     private GameObject currentWeapon;
     private bool facingRight = true;
@@ -11,6 +12,7 @@ public class PlayerWeapon : MonoBehaviour {
 
     void Start() {
         ResetWeaponPosition();
+        movement.OnFacingChanged += SetFacing;
     }
 
     void Update() {
@@ -56,4 +58,7 @@ public class PlayerWeapon : MonoBehaviour {
         currentWeapon = null;
     }
 
+    void OnDestroy() {
+        movement.OnFacingChanged -= SetFacing;
+    }
 }

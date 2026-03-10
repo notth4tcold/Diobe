@@ -45,12 +45,14 @@ GameObject:
   - component: {fileID: 1453107852476171461}
   - component: {fileID: 4552326715933499673}
   - component: {fileID: 3890928112132827171}
+  - component: {fileID: 2065951139269070494}
+  - component: {fileID: 1064482081370653762}
+  - component: {fileID: 2100416822370130854}
   - component: {fileID: 7483196144818418769}
   - component: {fileID: 875115725829788560}
   - component: {fileID: 2375586892457968088}
   - component: {fileID: 7425211244933489675}
   - component: {fileID: 4277870538110734495}
-  - component: {fileID: 2100416822370130854}
   - component: {fileID: 2319253271265689516}
   m_Layer: 0
   m_Name: Player
@@ -352,7 +354,49 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
   input: {fileID: 4552326715933499673}
+--- !u!114 &2065951139269070494
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3703478193029192525}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7cf51540175885741b667132adecb80f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerJump
+  input: {fileID: 4552326715933499673}
+--- !u!114 &1064482081370653762
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3703478193029192525}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2985f239f05ac6f4490da21366d88b35, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAttack
+  input: {fileID: 4552326715933499673}
   weapon: {fileID: 2100416822370130854}
+--- !u!114 &2100416822370130854
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3703478193029192525}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae118dc8899060c4d983b2f2269f05d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Weapon
+  handPosition: {fileID: 1248530821248669036}
+  handRotation: {fileID: 137854351157087678}
+  itemEquipPrefab: {fileID: 8765033410204424641, guid: c6f08fdc930c68c478a85184aba4ab80, type: 3}
+  movement: {fileID: 3890928112132827171}
 --- !u!114 &7483196144818418769
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -388,13 +432,6 @@ MonoBehaviour:
   money: 0
   level: 0
   exp: 0
-  stats:
-    strength: 0
-    dexterity: 0
-    intelligence: 0
-    vitality: 0
-    baseMoveSpeed: 5
-    bonusMoveSpeed: 0
   resources:
     health: 0
     mana: 0
@@ -406,27 +443,15 @@ MonoBehaviour:
     baseManaRegenPercent: 0.1
     vitalityRegenMultiplier: 0.0001
     intelligenceRegenMultiplier: 0.0001
-    itemHealthRegenBonus: 0
-    itemManaRegenBonus: 0
   combat:
-    armor: 0
-    dodgeChance: 0.01
-    blockChance: 0.3
-    fireRes: 0
-    iceRes: 0
-    lightningRes: 0
-    poisonRes: 0
-    magicRes: 0
-    attack: 10
-    attackSpeed: 0
-    hitChance: 0.7
-    critChance: 0.1
-    critMultiplier: 2
-    weaponAttack: 0
-    weaponFireAttack: 0
-    weaponIceAttack: 0
-    weaponLightningAttack: 0
-    weaponPoisonAttack: 0
+    baseDodgeChance: 0.01
+    dexterityDodgeMultiplier: 0.0005
+    baseAttackSpeed: 1
+    baseHitChance: 0.7
+    dexterityHitMultiplier: 0.002
+    baseCritChance: 0.05
+    dexterityCritMultiplier: 0.0005
+    baseCritMultiplier: 2
     strengthMultiplier: 1
   chestResolver: {fileID: 8377511858739425683}
   headResolver: {fileID: 7960145926783197516}
@@ -473,21 +498,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0465e4ccccbe0de4eb239b805eafb184, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EquipmentInventory
---- !u!114 &2100416822370130854
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3703478193029192525}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ae118dc8899060c4d983b2f2269f05d7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Weapon
-  handPosition: {fileID: 1248530821248669036}
-  handRotation: {fileID: 137854351157087678}
-  itemEquipPrefab: {fileID: 8765033410204424641, guid: c6f08fdc930c68c478a85184aba4ab80, type: 3}
 --- !u!95 &2319253271265689516
 Animator:
   serializedVersion: 7

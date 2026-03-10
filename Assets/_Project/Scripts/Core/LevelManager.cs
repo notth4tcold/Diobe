@@ -53,12 +53,25 @@ public class LevelManager : MonoBehaviour {
 
         // TODO remove test
         InventoryItem item = new InventoryItem(sword, 0, 0);
-        item.GenerateModifiers(1);
+        //item.GenerateModifiers(1);
+        item.modifiers.Add(new ItemModifier(StatType.MaxHealth, 1000));
         SpawnItem(Vector2.zero, item);
 
         InventoryItem item2 = new InventoryItem(sword, 0, 0);
-        item2.GenerateModifiers(1);
+        //item2.GenerateModifiers(1);
+        item2.modifiers.Add(new ItemModifier(StatType.AttackSpeed, 1000));
         SpawnItem(Vector2.zero, item2);
+
+        InventoryItem item3 = new InventoryItem(sword, 0, 0);
+        //item2.GenerateModifiers(1);
+        item3.modifiers.Add(new ItemModifier(StatType.MoveSpeed, 1));
+        SpawnItem(Vector2.zero, item3);
+
+        InventoryItem item4 = new InventoryItem(sword, 0, 0);
+        //item.GenerateModifiers(1);
+        item4.modifiers.Add(new ItemModifier(StatType.MaxHealth, 1000));
+        item4.modifiers.Add(new ItemModifier(StatType.HealthRegen, 10));
+        SpawnItem(Vector2.zero, item4);
     }
 
     void SpawnPlayer(Vector2 position) {

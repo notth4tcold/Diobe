@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed8c9f4dbf60b974ea65bc2b514b3771, type: 3}
+  m_Name: Mage
+  m_EditorClassIdentifier: Assembly-CSharp::ClassData
+  Class: 2
+  Strength: 5
+  Dexterity: 10
+  Intelligence: 15
+  Vitality: 8

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// TODO mudar para scriptable object como no classDatabase
 public class ItemDatabase : MonoBehaviour {
     public static ItemDatabase Instance { get; private set; }
 

@@ -10,8 +10,10 @@ public class GameManager : MonoBehaviour {
 
     public GameSaveData gameSaveData { get; private set; }
 
-    public Player player { get; private set; }
+    public Player Player { get; private set; }
     public event Action<Player> OnPlayerReady;
+
+    [SerializeField] private ClassDatabase classDatabase;
 
     void Awake() {
         if (Instance != null) {
@@ -37,16 +39,25 @@ public class GameManager : MonoBehaviour {
     }
 
     public void LoadGameSaveDataForNewCharacter(string name, int classID) {
+        ClassData classData = classDatabase.Get((CharacterClass)classID);
+
+        List<StatValue> baseStats = new() {
+            new StatValue { stat = StatType.Strength, value = classData.Strength },
+            new StatValue { stat = StatType.Dexterity, value = classData.Dexterity },
+            new StatValue { stat = StatType.Intelligence, value = classData.Intelligence },
+            new StatValue { stat = StatType.Vitality, value = classData.Vitality },
+        };
+
         var characterSaveData = new CharacterSaveData {
-            id = System.Guid.NewGuid().ToString(),
+            id = Guid.NewGuid().ToString(),
             playerName = name,
             characterClass = (CharacterClass)classID,
             money = 0,
             level = 0,
             exp = 0,
-            stats = GetDefaultStatsByClass((CharacterClass)classID),
-            resources = new(),
-            combat = new(),
+            baseStats = baseStats,
+            health = 0,
+            mana = 0,
             lastSave = DateTime.Now
         };
 
@@ -90,18 +101,19 @@ public class GameManager : MonoBehaviour {
     }
 
     public void FillCharacterSaveData() {
-        gameSaveData.characterSaveData.id = player.id;
-        gameSaveData.characterSaveData.playerName = player.playerName;
-        gameSaveData.characterSaveData.characterClass = player.characterClass;
-        gameSaveData.characterSaveData.money = player.money;
-        gameSaveData.characterSaveData.level = player.level;
-        gameSaveData.characterSaveData.exp = player.exp;
-        gameSaveData.characterSaveData.stats = player.stats;
-        gameSaveData.characterSaveData.resources = player.resources;
-        gameSaveData.characterSaveData.combat = player.combat;
+        gameSaveData.characterSaveData.id = Player.id;
+        gameSaveData.characterSaveData.playerName = Player.playerName;
+        gameSaveData.characterSaveData.characterClass = Player.characterClass;
+        gameSaveData.characterSaveData.money = Player.money;
+        gameSaveData.characterSaveData.level = Player.level;
+        gameSaveData.characterSaveData.exp = Player.exp;
 
-        gameSaveData.characterSaveData.items = player.BuildInventorySaveData();
-        gameSaveData.characterSaveData.equipments = player.BuildEquipmentSaveData();
+        gameSaveData.characterSaveData.baseStats = Player.BuildBaseStatsSaveData();
+        gameSaveData.characterSaveData.health = Player.resources.health;
+        gameSaveData.characterSaveData.mana = Player.resources.mana;
+
+        gameSaveData.characterSaveData.items = Player.BuildInventorySaveData();
+        gameSaveData.characterSaveData.equipments = Player.BuildEquipmentSaveData();
     }
 
     public void FillGameSaveData() {
@@ -115,12 +127,12 @@ public class GameManager : MonoBehaviour {
         foreach (var data in startingItems) {
             InventoryItem item = new InventoryItem(data, 0, 0);
             item.GenerateModifiers(1);
-            player.PickupItem(item);
+            Player.PickupItem(item);
         }
     }
 
     public void LoadItems(List<InventoryItemSaveData> items) {
-        player.ResetGrid();
+        Player.ResetGrid();
 
         foreach (var saveItem in items) {
             ItemData data = ItemDatabase.Instance.Get(saveItem.itemId);
@@ -128,12 +140,12 @@ public class GameManager : MonoBehaviour {
                 itemLevel = saveItem.itemLevel,
                 modifiers = saveItem.modifiers
             };
-            player.AddItem(item);
+            Player.AddItem(item);
         }
     }
 
     public void LoadEquipments(List<EquipmentItemSaveData> equipments) {
-        player.ResetSlots();
+        Player.ResetSlots();
 
         foreach (var saveItem in equipments) {
             ItemData data = ItemDatabase.Instance.Get(saveItem.itemId);
@@ -142,60 +154,24 @@ public class GameManager : MonoBehaviour {
                 modifiers = saveItem.modifiers
             };
 
-            if (item.data.equipmentType == EquipmentType.Ring) player.EquipRingInSlot(item, saveItem.slot);
-            else player.EquipItemToInventory(item);
+            if (item.data.equipmentType == EquipmentType.Ring) Player.EquipRingInSlot(item, saveItem.slot);
+            else Player.EquipItemToInventory(item);
         }
     }
 
     public void ResetGameState() {
         gameSaveData = null;
-        player.ResetGrid();
-        player.ResetSlots();
-    }
-
-    public PlayerStats GetDefaultStatsByClass(CharacterClass charClass) {
-        PlayerStats stats = new PlayerStats();
-
-        switch (charClass) {
-            case CharacterClass.Warrior:
-                stats.strength = 15;
-                stats.dexterity = 10;
-                stats.intelligence = 5;
-                stats.vitality = 12;
-                break;
-
-            case CharacterClass.Mage:
-                stats.strength = 5;
-                stats.dexterity = 10;
-                stats.intelligence = 15;
-                stats.vitality = 8;
-                break;
-
-            case CharacterClass.Archer:
-                stats.strength = 10;
-                stats.dexterity = 15;
-                stats.intelligence = 8;
-                stats.vitality = 10;
-                break;
-
-            default:
-                stats.strength = 10;
-                stats.dexterity = 10;
-                stats.intelligence = 10;
-                stats.vitality = 10;
-                break;
-        }
-
-        return stats;
+        Player.ResetGrid();
+        Player.ResetSlots();
     }
 
     public void RegisterPlayer(Player player) {
-        this.player = player;
+        this.Player = player;
         player.Initialize(gameSaveData);
         OnPlayerReady?.Invoke(player);
 
         if (gameSaveData.isNewPlayer) {
-            player.ResetHeathAndMana();
+            player.ResetHealthAndMana();
             AddInitialItems();
             gameSaveData.isNewPlayer = false;
             return;
@@ -207,7 +183,7 @@ public class GameManager : MonoBehaviour {
 
     public void SubscribeToPlayerReady(Action<Player> callback) {
         OnPlayerReady += callback;
-        if (player != null) callback(player);
+        if (Player != null) callback(Player);
     }
 
     public void UnsubscribeFromPlayerReady(Action<Player> callback) {

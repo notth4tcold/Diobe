@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.U2D.Animation;
-using Random = UnityEngine.Random;
 
 public class Player : MonoBehaviour {
     public string id;
@@ -43,6 +42,7 @@ public class Player : MonoBehaviour {
     void Start() {
         CameraManager.Instance.SetTarget(transform);
 
+        // TODO ajustar sprite para cada tipo de armadura que adicionar, por enquanto nao temos outra alem da default
         chestResolver.SetCategoryAndLabel("Chest", "Default");
         headResolver.SetCategoryAndLabel("Head", "Default");
         armLResolver.SetCategoryAndLabel("Arm_L", "Default");
@@ -62,18 +62,31 @@ public class Player : MonoBehaviour {
         money = save.characterSaveData.money;
         level = save.characterSaveData.level;
         exp = save.characterSaveData.exp;
-        stats = save.characterSaveData.stats;
-        resources = save.characterSaveData.resources;
-        combat = save.characterSaveData.combat;
 
-        InitializeResourcesAndCombat();
+        // Stats
+        stats = new();
+        foreach (var stat in save.characterSaveData.baseStats) {
+            stats.SetBase(stat.stat, stat.value);
+        }
+
+        // Resources
+        resources = new PlayerResources {
+            health = save.characterSaveData.health,
+            mana = save.characterSaveData.mana
+        };
+        resources.SetStats(stats);
+
+        // Combat
+        combat = new PlayerCombat();
+        combat.SetStats(stats);
+
         AddOnItemEquippedEvent();
+        AddOnStatsChangedEvent();
     }
 
-    public void InitializeResourcesAndCombat() {
-        resources.Initialize(stats);
-        combat.Initialize(stats);
-    }
+    // Stats
+    public List<StatValue> BuildBaseStatsSaveData() => stats.BuildBaseStatsSaveData();
+
 
     // Resources
     public void SetHealth(int value) {
@@ -86,18 +99,32 @@ public class Player : MonoBehaviour {
         OnManaPercentChanged?.Invoke(ManaPercent);
     }
 
-    public void TakeDamage(int amount) {
-        if (Dodge || Block) return;
-        amount -= combat.armor;
+    public float HealthPercent => resources.MaxHealth == 0 ? 0 : (float)resources.health / resources.MaxHealth;
+    public float ManaPercent => resources.MaxMana == 0 ? 0 : (float)resources.mana / resources.MaxMana;
 
-        // TODO Validar se o tipo do dano e adicionar resistancia
-        //fireRes
-        //iceRes
-        //lightningRes
-        //poisonRes
-        //magicRes
+    public void TakeDamage(DamageInfo dmg) {
+        if (dmg.canDodge && combat.RollDodge()) return;
+        if (dmg.canBlock && combat.RollBlock()) return;
 
-        SetHealth(resources.health - amount);
+        int totalDamage = 0;
+
+        // Physical
+        int physical = Mathf.Max(0, dmg.physical - combat.Armor);
+        totalDamage += physical;
+
+        // Elemental
+        totalDamage += ApplyResistance(dmg.fire, combat.FireRes);
+        totalDamage += ApplyResistance(dmg.ice, combat.IceRes);
+        totalDamage += ApplyResistance(dmg.lightning, combat.LightningRes);
+        totalDamage += ApplyResistance(dmg.poison, combat.PoisonRes);
+        totalDamage += ApplyResistance(dmg.magic, combat.MagicRes);
+
+        SetHealth(resources.health - totalDamage);
+    }
+
+    int ApplyResistance(int damage, float resistancePercent) {
+        float multiplier = 1f - resistancePercent / 100f;
+        return Mathf.RoundToInt(damage * multiplier);
     }
 
     public void SpendMana(int amount) {
@@ -112,7 +139,7 @@ public class Player : MonoBehaviour {
         SetMana(resources.mana + amount);
     }
 
-    public void ResetHeathAndMana() {
+    public void ResetHealthAndMana() {
         SetHealth(resources.MaxHealth);
         SetMana(resources.MaxMana);
     }
@@ -138,32 +165,10 @@ public class Player : MonoBehaviour {
         }
     }
 
-    public float HealthPercent => resources.MaxHealth == 0 ? 0 : (float)resources.health / resources.MaxHealth;
-    public float ManaPercent => resources.MaxMana == 0 ? 0 : (float)resources.mana / resources.MaxMana;
-
 
     // Combat
+    public DamageInfo DoDamage() => combat.CreateDamage();
 
-    public int DoDamage() {
-
-        // TODO Validar o tipo do atack do player e retornar + dano elemental
-        // FireDamage
-        // IceDamage
-        // LightningDamage
-        // PoisonDamage
-
-        if (Hit) {
-            if (Crit) return Mathf.RoundToInt(combat.Damage * combat.critMultiplier);
-            return combat.Damage;
-        }
-
-        return 0;
-    }
-
-    public bool Dodge => Random.value < combat.dodgeChance;
-    public bool Block => Random.value < combat.blockChance;
-    public bool Crit => Random.value < combat.critChance;
-    public bool Hit => Random.value < combat.hitChance;
 
     //Inventory
     public List<InventoryItemSaveData> BuildInventorySaveData() => InventoryGrid.BuildSaveData();
@@ -175,10 +180,6 @@ public class Player : MonoBehaviour {
         if (item.data.type == ItemType.Weapon && !HasWeapon) {
             return EquipItemToInventory(item);
         }
-
-        // foreach (var mod in item.modifiers) { TODO VER ONDE ADICIONAR OS STATS AO PLAYER
-        //     stats.Add(mod.stat, mod.value);
-        // }
 
         return SpawnItem(item);
     }
@@ -200,22 +201,30 @@ public class Player : MonoBehaviour {
         EquipmentSlots.OnItemEquipped += HandleItemEquipped;
         EquipmentSlots.OnItemUnequipped += HandleItemUnequipped;
     }
+
+    void AddOnStatsChangedEvent() {
+        stats.OnStatsChanged += HandleStatsChanged;
+    }
+
     void OnDestroy() {
         EquipmentSlots.OnItemEquipped -= HandleItemEquipped;
         EquipmentSlots.OnItemUnequipped -= HandleItemUnequipped;
+        stats.OnStatsChanged -= HandleStatsChanged;
     }
 
     void HandleItemEquipped(InventoryItem item) {
         if (item.data.equipmentType == EquipmentType.MainHand) EquipWeapon(item);
+
+        foreach (var mod in item.modifiers) stats.AddEquipment(mod.stat, mod.value);
     }
     void HandleItemUnequipped(InventoryItem item) {
         if (item.data.equipmentType == EquipmentType.MainHand) UnequipWeapon();
-    }
-}
 
-[Serializable]
-public enum CharacterClass {
-    Warrior,
-    Archer,
-    Mage
+        foreach (var mod in item.modifiers) stats.RemoveEquipment(mod.stat, mod.value);
+    }
+
+    void HandleStatsChanged() {
+        SetHealth(resources.health);
+        SetMana(resources.mana);
+    }
 }

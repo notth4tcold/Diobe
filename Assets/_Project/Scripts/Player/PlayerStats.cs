@@ -1,12 +1,81 @@
-[System.Serializable]
+using System;
+using System.Collections.Generic;
+
+[Serializable]
 public class PlayerStats {
-    public int strength; //Aumenta dano físico, aumentar armadura?, Requisitos de armas pesadas,
-    public int dexterity; //Aumenta chance de acerto, Chance de esquiva, Chance de crítico, Requisitos de armas leves
-    public int intelligence; // Aumenta dano mágico, Mana maxima, Regeneração de Mana, Poder de feitiços
-    public int vitality; //Vida máxima, Regeneração de vida
+    Dictionary<StatType, float> baseStats = new();
+    Dictionary<StatType, float> equipmentStats = new();
+    Dictionary<StatType, float> buffStats = new();
 
-    public float baseMoveSpeed = 5f;
-    public float bonusMoveSpeed = 0f;
+    Dictionary<StatType, float> finalStats = new();
 
-    public float MoveSpeed => baseMoveSpeed + bonusMoveSpeed;
+    public event Action OnStatsChanged;
+
+    public PlayerStats() {
+        Initialize();
+    }
+
+    public void Initialize() {
+        foreach (StatType stat in Enum.GetValues(typeof(StatType))) {
+            baseStats[stat] = 0;
+            equipmentStats[stat] = 0;
+            buffStats[stat] = 0;
+            finalStats[stat] = 0;
+        }
+
+        Recalculate();
+    }
+
+    public float Get(StatType stat) {
+        return finalStats[stat];
+    }
+
+    public void SetBase(StatType stat, float value) {
+        baseStats[stat] = value;
+        Recalculate();
+    }
+
+    public void AddEquipment(StatType stat, float value) {
+        equipmentStats[stat] += value;
+        Recalculate();
+    }
+
+    public void RemoveEquipment(StatType stat, float value) {
+        equipmentStats[stat] -= value;
+        Recalculate();
+    }
+
+    public void AddBuff(StatType stat, float value) {
+        buffStats[stat] += value;
+        Recalculate();
+    }
+
+    public void RemoveBuff(StatType stat, float value) {
+        buffStats[stat] -= value;
+        Recalculate();
+    }
+
+    void Recalculate() {
+        foreach (StatType stat in Enum.GetValues(typeof(StatType))) {
+            finalStats[stat] =
+                baseStats[stat] +
+                equipmentStats[stat] +
+                buffStats[stat];
+        }
+
+        OnStatsChanged?.Invoke();
+    }
+
+    public List<StatValue> BuildBaseStatsSaveData() {
+        List<StatValue> list = new();
+
+        foreach (var kv in baseStats) {
+            list.Add(new StatValue {
+                stat = kv.Key,
+                value = kv.Value
+            });
+        }
+
+        return list;
+    }
 }

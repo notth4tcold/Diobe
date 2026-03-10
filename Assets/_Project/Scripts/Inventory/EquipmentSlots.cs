@@ -38,6 +38,7 @@ public class EquipmentSlots : MonoBehaviour {
             slots[type] = null;
 
             OnItemRemoved?.Invoke(oldItem);
+            OnItemUnequipped?.Invoke(oldItem);
             ReturnItemToInventory(oldItem);
         }
 
@@ -58,6 +59,7 @@ public class EquipmentSlots : MonoBehaviour {
                     ring1 = null;
 
                     OnItemRemoved?.Invoke(oldItem);
+                    OnItemUnequipped?.Invoke(oldItem);
                     ReturnItemToInventory(oldItem);
                 }
                 ring1 = item;
@@ -70,6 +72,7 @@ public class EquipmentSlots : MonoBehaviour {
                     ring2 = null;
 
                     OnItemRemoved?.Invoke(oldItem);
+                    OnItemUnequipped?.Invoke(oldItem);
                     ReturnItemToInventory(oldItem);
                 }
                 ring2 = item;
