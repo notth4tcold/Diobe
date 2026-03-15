@@ -17,7 +17,7 @@ public class ClassData : ScriptableObject {
 }
 
 [Serializable]
-public enum CharacterClass {
+public enum CharacterClass { // TODO passar por todas as classes duplas e criar file
     Warrior,
     Archer,
     Mage

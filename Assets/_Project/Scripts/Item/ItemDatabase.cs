@@ -1,22 +1,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// TODO mudar para scriptable object como no classDatabase
-public class ItemDatabase : MonoBehaviour {
-    public static ItemDatabase Instance { get; private set; }
+[CreateAssetMenu(fileName = "ItemDatabase", menuName = "Scriptable Objects/ItemDatabase")]
+public class ItemDatabase : ScriptableObject {
 
     [SerializeField] private ItemData[] items;
 
     private Dictionary<string, ItemData> lookup;
 
-    void Awake() {
-        if (Instance != null) {
-            Destroy(gameObject);
-            return;
-        }
-
-        Instance = this;
-        DontDestroyOnLoad(gameObject);
+    void Init() {
+        if (lookup != null) return;
 
         lookup = new Dictionary<string, ItemData>();
 
@@ -36,6 +29,8 @@ public class ItemDatabase : MonoBehaviour {
     }
 
     public ItemData Get(string id) {
+        Init();
+
         if (!lookup.TryGetValue(id, out var item)) {
             Debug.LogError($"ItemData não encontrado: {id}");
             return null;

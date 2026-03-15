@@ -4,7 +4,7 @@ public class ItemPickup : MonoBehaviour {
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private PolygonCollider2D polygonCollider;
 
-    private InventoryItem item;
+    private Item item;
     private float outlineThickness = 2f;
     private Material instanceMaterial;
     private Player player;
@@ -15,7 +15,7 @@ public class ItemPickup : MonoBehaviour {
         SetOutline(0f);
     }
 
-    public void Initialize(InventoryItem inventoryItem) {
+    public void Initialize(Item inventoryItem) {
         item = inventoryItem;
 
         if (item?.data == null) return;
@@ -56,5 +56,5 @@ public class ItemPickup : MonoBehaviour {
         player = p;
     }
 
-    public InventoryItem GetItemData() => item;
+    public Item GetItemData() => item;
 }

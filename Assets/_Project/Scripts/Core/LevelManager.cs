@@ -19,7 +19,6 @@ public class LevelManager : MonoBehaviour {
     static void Init() {
         EnsureManager<GameManager>();
         EnsureManager<AudioManager>();
-        EnsureManager<ItemDatabase>();
 
         GameManager.Instance.LoadGameSaveDataForNewCharacter("teste", 1);
     }
@@ -52,25 +51,25 @@ public class LevelManager : MonoBehaviour {
         SpawnPlayer(gameSave.hasPlayerPosition ? gameSave.playerPosition : defaultPlayerPos);
 
         // TODO remove test
-        InventoryItem item = new InventoryItem(sword, 0, 0);
-        //item.GenerateModifiers(1);
-        item.modifiers.Add(new ItemModifier(StatType.MaxHealth, 1000));
+        Item item = new Item(sword, 0, 0);
+        item.GenerateModifiers(1, LootQuality.Boss);
+        //item.modifiers.Add(new ItemModifier(StatType.MaxHealth, 1000));
         SpawnItem(Vector2.zero, item);
 
-        InventoryItem item2 = new InventoryItem(sword, 0, 0);
-        //item2.GenerateModifiers(1);
-        item2.modifiers.Add(new ItemModifier(StatType.AttackSpeed, 1000));
+        Item item2 = new Item(sword, 0, 0);
+        item2.GenerateModifiers(1, LootQuality.Boss);
+        //item2.modifiers.Add(new ItemModifier(StatType.AttackSpeed, 1000));
         SpawnItem(Vector2.zero, item2);
 
-        InventoryItem item3 = new InventoryItem(sword, 0, 0);
-        //item2.GenerateModifiers(1);
-        item3.modifiers.Add(new ItemModifier(StatType.MoveSpeed, 1));
+        Item item3 = new Item(sword, 0, 0);
+        item3.GenerateModifiers(1, LootQuality.Boss);
+        //item3.modifiers.Add(new ItemModifier(StatType.MoveSpeed, 1));
         SpawnItem(Vector2.zero, item3);
 
-        InventoryItem item4 = new InventoryItem(sword, 0, 0);
-        //item.GenerateModifiers(1);
-        item4.modifiers.Add(new ItemModifier(StatType.MaxHealth, 1000));
-        item4.modifiers.Add(new ItemModifier(StatType.HealthRegen, 10));
+        Item item4 = new Item(sword, 0, 0);
+        item4.GenerateModifiers(1, LootQuality.Boss);
+        //item4.modifiers.Add(new ItemModifier(StatType.MaxHealth, 1000));
+        //item4.modifiers.Add(new ItemModifier(StatType.HealthRegen, 10));
         SpawnItem(Vector2.zero, item4);
     }
 
@@ -82,7 +81,7 @@ public class LevelManager : MonoBehaviour {
         mapInstance = Instantiate(mapPrefab, new Vector2(position.x, position.y), Quaternion.identity);
     }
 
-    public void SpawnItem(Vector2 position, InventoryItem item) {
+    public void SpawnItem(Vector2 position, Item item) {
         GameObject itemInstance = Instantiate(itemPickupPrefab, position, Quaternion.identity);
         ItemPickup pickup = itemInstance.GetComponent<ItemPickup>();
         pickup.Initialize(item);

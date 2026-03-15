@@ -14,6 +14,8 @@ public class GameManager : MonoBehaviour {
     public event Action<Player> OnPlayerReady;
 
     [SerializeField] private ClassDatabase classDatabase;
+    [SerializeField] private ItemDatabase itemDatabase;
+    [SerializeField] private ModifierGeneratorDatabase modifierGeneratorDatabase;
 
     void Awake() {
         if (Instance != null) {
@@ -53,7 +55,7 @@ public class GameManager : MonoBehaviour {
             playerName = name,
             characterClass = (CharacterClass)classID,
             money = 0,
-            level = 0,
+            level = 1,
             exp = 0,
             baseStats = baseStats,
             health = 0,
@@ -85,6 +87,7 @@ public class GameManager : MonoBehaviour {
 
     public void LoadGame(GameSaveData gameSave) {
         gameSaveData = gameSave;
+        // TODO load items da fase e facingRight do player
 
         SceneManager.LoadScene("Home");
     }
@@ -125,8 +128,8 @@ public class GameManager : MonoBehaviour {
 
     public void AddInitialItems() {
         foreach (var data in startingItems) {
-            InventoryItem item = new InventoryItem(data, 0, 0);
-            item.GenerateModifiers(1);
+            Item item = new Item(data, 0, 0);
+            item.GenerateModifiers(Player.level, LootQuality.Normal);
             Player.PickupItem(item);
         }
     }
@@ -135,12 +138,12 @@ public class GameManager : MonoBehaviour {
         Player.ResetGrid();
 
         foreach (var saveItem in items) {
-            ItemData data = ItemDatabase.Instance.Get(saveItem.itemId);
-            InventoryItem item = new InventoryItem(data, saveItem.x, saveItem.y) {
+            ItemData data = itemDatabase.Get(saveItem.itemId);
+            Item item = new Item(data, saveItem.x, saveItem.y) {
                 itemLevel = saveItem.itemLevel,
-                modifiers = saveItem.modifiers
+                modifiers = saveItem.modifiers ?? new List<ItemModifier>(),
             };
-            Player.AddItem(item);
+            Player.PlaceItem(item);
         }
     }
 
@@ -148,14 +151,14 @@ public class GameManager : MonoBehaviour {
         Player.ResetSlots();
 
         foreach (var saveItem in equipments) {
-            ItemData data = ItemDatabase.Instance.Get(saveItem.itemId);
-            InventoryItem item = new InventoryItem(data, 0, 0) {
+            ItemData data = itemDatabase.Get(saveItem.itemId);
+            Item item = new Item(data, 0, 0) {
                 itemLevel = saveItem.itemLevel,
-                modifiers = saveItem.modifiers
+                modifiers = saveItem.modifiers ?? new List<ItemModifier>(),
             };
 
             if (item.data.equipmentType == EquipmentType.Ring) Player.EquipRingInSlot(item, saveItem.slot);
-            else Player.EquipItemToInventory(item);
+            else Player.EquipItem(item);
         }
     }
 
@@ -166,7 +169,7 @@ public class GameManager : MonoBehaviour {
     }
 
     public void RegisterPlayer(Player player) {
-        this.Player = player;
+        Player = player;
         player.Initialize(gameSaveData);
         OnPlayerReady?.Invoke(player);
 
@@ -179,6 +182,10 @@ public class GameManager : MonoBehaviour {
 
         LoadItems(gameSaveData.characterSaveData.items);
         LoadEquipments(gameSaveData.characterSaveData.equipments);
+    }
+
+    public ModifierGeneratorDatabase GetModifierGeneratorDatabase() {
+        return modifierGeneratorDatabase;
     }
 
     public void SubscribeToPlayerReady(Action<Player> callback) {

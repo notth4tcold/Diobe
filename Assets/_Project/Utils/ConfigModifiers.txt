@@ -1,0 +1,39 @@
+// Modifier         Rarity      IsPercent       Tier1                   Tier2                   Tier3
+
+// Primary Attributes
+Strength            Common      False           2 4 6 8                 6 10 14 18              14 20 26 32
+Dexterity           Common      False           2 4 6 8                 6 10 14 18              14 20 26 32
+Intelligence        Common      False           2 4 6 8                 6 10 14 18              14 20 26 32
+Vitality            Common      False           2 4 6 8                 6 10 14 18              14 20 26 32
+
+// Resources
+MaxHealth           Common      False           10 20 30 40             30 50 70 90             70 110 150 190
+MaxMana             Common      False           10 20 30 40             30 50 70 90             70 110 150 190
+HealthRegen         Rare        True            10 20 30 40             50 60 70 80             90 100 110 120
+ManaRegen           Rare        True            10 20 30 40             50 60 70 80             90 100 110 120
+
+// Defense
+Armor               Common      False           5 10 15 20              15 25 35 45             35 55 75 95
+FireRes             Uncommon    True            5 10 15 20              15 20 25 30             25 30 35 40
+IceRes              Uncommon    True            5 10 15 20              15 20 25 30             25 30 35 40
+LightningRes        Uncommon    True            5 10 15 20              15 20 25 30             25 30 35 40
+PoisonRes           Uncommon    True            5 10 15 20              15 20 25 30             25 30 35 40
+MagicRes            Rare        True            5 10 15 20              15 20 25 30             25 30 35 40
+AllRes              VeryRare    True            10 15 20 25             20 25 30 35             30 35 40 45
+
+// Attack
+WeaponDamage        Common      False           100 200 300 400         500 600 700 800         900 1000 1500 2000 
+FireDamage          Uncommon    False           30 60 90 120            150 180 210 240         270 300 350 400 
+IceDamage           Uncommon    False           30 60 90 120            150 180 210 240         270 300 350 400
+LightningDamage     Uncommon    False           30 60 90 120            150 180 210 240         270 300 350 400
+PoisonDamage        Uncommon    False           30 60 90 120            150 180 210 240         270 300 350 400
+
+AttackSpeed         VeryRare    True            10 20 30 40             40 50 60 80             90 100 120 150
+HitChance           Rare        True            3 6 9 12                8 12 16 20              15 20 25 30
+CritChance          Rare        True            3 6 9 12                8 12 16 20              15 20 25 30
+CritMultiplier      Legendary   False           1                       2                       3
+
+// Utility
+MoveSpeed           VeryRare    True            1 2 3 4                 3 4 5 6                 5 6 8 10
+DodgeChance         Rare        True            1 2 3 4                 3 4 5 6                 5 6 8 10
+BlockChance         Rare        True            30                      60                      90

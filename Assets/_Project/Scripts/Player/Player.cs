@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.U2D.Animation;
 
@@ -28,12 +29,12 @@ public class Player : MonoBehaviour {
 
     [SerializeField] private PlayerWeapon playerWeapon;
 
-    public InventoryGrid InventoryGrid { get; private set; }
+    public InventoryGrids InventoryGrid { get; private set; }
     public EquipmentSlots EquipmentInventory { get; private set; }
 
     void Awake() {
         EquipmentInventory = GetComponent<EquipmentSlots>();
-        InventoryGrid = GetComponent<InventoryGrid>();
+        InventoryGrid = GetComponent<InventoryGrids>();
         EquipmentInventory.Initialize();
         InventoryGrid.Initialize();
         GameManager.Instance.RegisterPlayer(this);
@@ -81,6 +82,7 @@ public class Player : MonoBehaviour {
         combat.SetStats(stats);
 
         AddOnItemEquippedEvent();
+        AddOnItemReturnRequestedEvent();
         AddOnStatsChangedEvent();
     }
 
@@ -173,25 +175,25 @@ public class Player : MonoBehaviour {
     //Inventory
     public List<InventoryItemSaveData> BuildInventorySaveData() => InventoryGrid.BuildSaveData();
     public void ResetGrid() => InventoryGrid.ResetGrid();
-    public void AddItem(InventoryItem item) => InventoryGrid.PlaceItem(item, item.x, item.y);
-    public bool SpawnItem(InventoryItem item) => InventoryGrid.SpawnItem(item);
+    public void PlaceItem(Item item) => InventoryGrid.PlaceItem(item, item.x, item.y);
+    public bool AddItem(Item item) => InventoryGrid.AddItem(item);
 
-    public bool PickupItem(InventoryItem item) {
-        if (item.data.type == ItemType.Weapon && !HasWeapon) {
-            return EquipItemToInventory(item);
+    public bool PickupItem(Item item) {
+        if (item.data.type == ItemType.Weapon && !HasWeapon && item.itemLevel <= level) {
+            return EquipItem(item);
         }
 
-        return SpawnItem(item);
+        return AddItem(item);
     }
 
-    public void DropItem(InventoryItem item) => LevelManager.Instance.SpawnItem(transform.position, item);
+    public void DropItem(Item item) => LevelManager.Instance.SpawnItem(transform.position, item);
 
     // Equipment
     public bool HasWeapon => EquipmentInventory.HasWeapon;
-    public bool EquipItemToInventory(InventoryItem item) => EquipmentInventory.EquipItem(item);
-    public bool EquipRingInSlot(InventoryItem item, RingSlot slot) => EquipmentInventory.EquipRingInSlot(item, slot);
+    public bool EquipItem(Item item) => EquipmentInventory.EquipItem(item, level);
+    public bool EquipRingInSlot(Item item, RingSlot slot) => EquipmentInventory.EquipRingInSlot(item, slot, level);
 
-    public void EquipWeapon(InventoryItem item) => playerWeapon.Equip(item.data);
+    public void EquipWeapon(Item item) => playerWeapon.Equip(item.data);
     public void UnequipWeapon() => playerWeapon.Unequip();
 
     public List<EquipmentItemSaveData> BuildEquipmentSaveData() => EquipmentInventory.BuildSaveData();
@@ -202,6 +204,10 @@ public class Player : MonoBehaviour {
         EquipmentSlots.OnItemUnequipped += HandleItemUnequipped;
     }
 
+    void AddOnItemReturnRequestedEvent() {
+        EquipmentSlots.OnItemReturnRequested += HandleItemReturnRequested;
+    }
+
     void AddOnStatsChangedEvent() {
         stats.OnStatsChanged += HandleStatsChanged;
     }
@@ -209,18 +215,24 @@ public class Player : MonoBehaviour {
     void OnDestroy() {
         EquipmentSlots.OnItemEquipped -= HandleItemEquipped;
         EquipmentSlots.OnItemUnequipped -= HandleItemUnequipped;
+        EquipmentSlots.OnItemReturnRequested -= HandleItemReturnRequested;
         stats.OnStatsChanged -= HandleStatsChanged;
     }
 
-    void HandleItemEquipped(InventoryItem item) {
+    void HandleItemEquipped(Item item) {
         if (item.data.equipmentType == EquipmentType.MainHand) EquipWeapon(item);
 
-        foreach (var mod in item.modifiers) stats.AddEquipment(mod.stat, mod.value);
+        foreach (var mod in item.modifiers) stats.AddEquipment(mod.stat.stat, mod.value);
     }
-    void HandleItemUnequipped(InventoryItem item) {
+    void HandleItemUnequipped(Item item) {
         if (item.data.equipmentType == EquipmentType.MainHand) UnequipWeapon();
 
-        foreach (var mod in item.modifiers) stats.RemoveEquipment(mod.stat, mod.value);
+        foreach (var mod in item.modifiers) stats.RemoveEquipment(mod.stat.stat, mod.value);
+    }
+
+    void HandleItemReturnRequested(Item item) {
+        if (AddItem(item)) {
+        } else DropItem(item);
     }
 
     void HandleStatsChanged() {

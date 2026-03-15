@@ -46,8 +46,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   startingItems:
   - {fileID: 11400000, guid: 29e937e8c0ffd3441b23988a41e7ef87, type: 2}
-  - {fileID: 11400000, guid: 29e937e8c0ffd3441b23988a41e7ef87, type: 2}
-  - {fileID: 11400000, guid: 29e937e8c0ffd3441b23988a41e7ef87, type: 2}
-  - {fileID: 11400000, guid: 29e937e8c0ffd3441b23988a41e7ef87, type: 2}
-  - {fileID: 11400000, guid: 29e937e8c0ffd3441b23988a41e7ef87, type: 2}
   classDatabase: {fileID: 11400000, guid: b73c33ccfcf4ac44cad84f71b7946baf, type: 2}
+  itemDatabase: {fileID: 11400000, guid: 7e1dfe74b15e3ba4db09aa5cfd5b63e4, type: 2}
+  modifierGeneratorDatabase: {fileID: 11400000, guid: 39b0fc849e94e184d80f43e19d218bf8, type: 2}
