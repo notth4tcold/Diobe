@@ -52,7 +52,7 @@ public class EquipmentUI : MonoBehaviour, IItemContainerUI {
         EquipmentSlotUI slot = GetSlotUnderMouse(eventData);
         if (slot == null) return;
 
-        bool valid = player.EquipmentInventory.CanEquipItem(item, player.level);
+        bool valid = item.data.equipmentType == slot.SlotType && player.EquipmentInventory.CanEquipItem(item, player.level);
         slot.SetHighlight(valid ? Color.green : Color.red);
     }
 
@@ -123,7 +123,7 @@ public class EquipmentUI : MonoBehaviour, IItemContainerUI {
         var slot = GetSlotUnderMouse(eventData);
         if (slot == null) return false;
 
-        return player.EquipmentInventory.CanEquipItem(itemUI.Item, player.level);
+        return itemUI.Item.data.equipmentType == slot.SlotType && player.EquipmentInventory.CanEquipItem(itemUI.Item, player.level);
     }
 
     public void ReceiveItem(ItemUI itemUI, PointerEventData eventData) {

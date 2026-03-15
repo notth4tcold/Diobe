@@ -10,6 +10,11 @@ public class LevelManager : MonoBehaviour {
 
     // TODO remove test
     [SerializeField] private ItemData sword;
+    [SerializeField] private ItemData armor;
+    [SerializeField] private ItemData boots;
+    [SerializeField] private ItemData helmet;
+    [SerializeField] private ItemData ring;
+    [SerializeField] private ItemData necklace;
 
     GameObject playerInstance;
     GameObject mapInstance;
@@ -53,24 +58,31 @@ public class LevelManager : MonoBehaviour {
         // TODO remove test
         Item item = new Item(sword, 0, 0);
         item.GenerateModifiers(1, LootQuality.Boss);
-        //item.modifiers.Add(new ItemModifier(StatType.MaxHealth, 1000));
         SpawnItem(Vector2.zero, item);
 
-        Item item2 = new Item(sword, 0, 0);
+        Item item2 = new Item(armor, 0, 0);
         item2.GenerateModifiers(1, LootQuality.Boss);
-        //item2.modifiers.Add(new ItemModifier(StatType.AttackSpeed, 1000));
         SpawnItem(Vector2.zero, item2);
 
-        Item item3 = new Item(sword, 0, 0);
+        Item item3 = new Item(boots, 0, 0);
         item3.GenerateModifiers(1, LootQuality.Boss);
-        //item3.modifiers.Add(new ItemModifier(StatType.MoveSpeed, 1));
         SpawnItem(Vector2.zero, item3);
 
-        Item item4 = new Item(sword, 0, 0);
+        Item item4 = new Item(helmet, 0, 0);
         item4.GenerateModifiers(1, LootQuality.Boss);
-        //item4.modifiers.Add(new ItemModifier(StatType.MaxHealth, 1000));
-        //item4.modifiers.Add(new ItemModifier(StatType.HealthRegen, 10));
         SpawnItem(Vector2.zero, item4);
+
+        Item item5 = new Item(ring, 0, 0);
+        item5.GenerateModifiers(1, LootQuality.Boss);
+        SpawnItem(Vector2.zero, item5);
+
+        Item item6 = new Item(ring, 0, 0);
+        item6.GenerateModifiers(1, LootQuality.Boss);
+        SpawnItem(Vector2.zero, item6);
+
+        Item item7 = new Item(necklace, 0, 0);
+        item7.GenerateModifiers(1, LootQuality.Boss);
+        SpawnItem(Vector2.zero, item7);
     }
 
     void SpawnPlayer(Vector2 position) {

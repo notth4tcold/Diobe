@@ -8367,6 +8367,11 @@ MonoBehaviour:
   mapPrefab: {fileID: 2809535483467954637, guid: 9aa6c70a4a51c5547990ee4a8cdf715f, type: 3}
   itemPickupPrefab: {fileID: 8765033410204424641, guid: 397d2b6d68bbc5b4d81d9275b179b9f8, type: 3}
   sword: {fileID: 11400000, guid: 29e937e8c0ffd3441b23988a41e7ef87, type: 2}
+  armor: {fileID: 11400000, guid: 68325a5ef175e1e48af395c1b4bbb3ce, type: 2}
+  boots: {fileID: 11400000, guid: f09fb5a3184062a4e8735e98c01d1c81, type: 2}
+  helmet: {fileID: 11400000, guid: ee20a57af23931142a4655814f2a6687, type: 2}
+  ring: {fileID: 11400000, guid: 4d8182c38943f864ab131b8ca2d96765, type: 2}
+  necklace: {fileID: 11400000, guid: cd904bedfed81d74a9c038af884c40a0, type: 2}
 --- !u!4 &1130479304
 Transform:
   m_ObjectHideFlags: 0
