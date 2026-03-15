@@ -10,15 +10,4 @@ public class ClassData : ScriptableObject {
     public int Dexterity;
     public int Intelligence;
     public int Vitality;
-
-    // [Header("Base Resources")]
-    // public int BaseHealth;
-    // public int BaseMana;
-}
-
-[Serializable]
-public enum CharacterClass { // TODO passar por todas as classes duplas e criar file
-    Warrior,
-    Archer,
-    Mage
 }

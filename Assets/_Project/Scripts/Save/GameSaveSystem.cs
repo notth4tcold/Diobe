@@ -55,7 +55,3 @@ public class GameSaveSystem {
         );
     }
 }
-
-public class GameSaveIndex {
-    public List<string> gameSaveIds = new();
-}

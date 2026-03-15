@@ -55,7 +55,3 @@ public class CharacterSaveSystem {
         );
     }
 }
-
-public class CharacterIndex {
-    public List<string> characterIds = new();
-}

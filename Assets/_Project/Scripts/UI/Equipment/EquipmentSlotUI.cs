@@ -17,9 +17,3 @@ public class EquipmentSlotUI : MonoBehaviour {
         background.color = Color.white;
     }
 }
-
-public enum RingSlot {
-    None,
-    Ring1,
-    Ring2
-}
